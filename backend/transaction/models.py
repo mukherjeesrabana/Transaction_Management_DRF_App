@@ -20,7 +20,7 @@ class Profile(models.Model):
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='customer')
     
     def __str__(self):
-        return self.user.username
+        return self.user.username+' '+str(self.user_type)
 
 class Account(models.Model):
     profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
@@ -29,7 +29,7 @@ class Account(models.Model):
     balance = models.DecimalField(max_digits=10, decimal_places=2)
     
     def __str__(self):
-        return self.account_name
+        return self.account_name+' '+str(self.balance)
 
 class Transaction(models.Model):
     date = models.DateTimeField(auto_now_add=True)
@@ -40,4 +40,4 @@ class Transaction(models.Model):
     available_balance = models.DecimalField(max_digits=10, decimal_places=2)
     
     def __str__(self):
-        return self.account.account_name + ' ' + self.transaction_type
+        return self.description+' '+str(self.amount)+' '+str(self.transaction_type)
