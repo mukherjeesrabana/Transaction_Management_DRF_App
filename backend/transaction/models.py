@@ -40,4 +40,4 @@ class Transaction(models.Model):
     available_balance = models.DecimalField(max_digits=10, decimal_places=2)
     
     def __str__(self):
-        return self.description+' '+str(self.amount)+' '+str(self.transaction_type)
+        return str(self.account.account_name)+ '-- '+ self.description+' '+str(self.amount)+' '+str(self.transaction_type)

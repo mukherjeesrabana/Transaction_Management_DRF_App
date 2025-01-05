@@ -1,25 +1,14 @@
 /*!
-
 =========================================================
 * Vision UI Free React - v1.0.0
 =========================================================
-
-* Product Page: https://www.creative-tim.com/product/vision-ui-free-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
-* Licensed under MIT (https://github.com/creativetimofficial/vision-ui-free-react/blob/master LICENSE.md)
-
-* Design and Coded by Simmmple & Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the software.
-
+...
 */
 
 import { useState, useEffect, useMemo } from "react";
 
 // react-router components
-import { Route, Switch, Redirect, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -102,7 +91,7 @@ export default function App() {
       }
 
       if (route.route) {
-        return <Route exact path={route.route} component={route.component} key={route.key} />;
+        return <Route path={route.route} element={<route.component />} key={route.key} />;
       }
 
       return null;
@@ -151,10 +140,10 @@ export default function App() {
           </>
         )}
         {layout === "vr" && <Configurator />}
-        <Switch>
+        <Routes>
           {getRoutes(routes)}
-          <Redirect from="*" to="/dashboard" />
-        </Switch>
+          <Route path="*" element={<Navigate to="/dashboard" />} />
+        </Routes>
       </ThemeProvider>
     </CacheProvider>
   ) : (
@@ -175,10 +164,10 @@ export default function App() {
         </>
       )}
       {layout === "vr" && <Configurator />}
-      <Switch>
+      <Routes>
         {getRoutes(routes)}
-        <Redirect from="*" to="/dashboard" />
-      </Switch>
+        <Route path="*" element={<Navigate to="/dashboard" />} />
+      </Routes>
     </ThemeProvider>
   );
 }

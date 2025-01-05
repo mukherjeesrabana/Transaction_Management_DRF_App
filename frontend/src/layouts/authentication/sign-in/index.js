@@ -1,25 +1,8 @@
-/*!
-
-=========================================================
-* Vision UI Free React - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/vision-ui-free-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
-* Licensed under MIT (https://github.com/creativetimofficial/vision-ui-free-react/blob/master LICENSE.md)
-
-* Design and Coded by Simmmple & Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
 import { useState } from "react";
+import axios from "axios"; // For making API requests
 
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // Vision UI Dashboard React components
 import VuiBox from "components/VuiBox";
@@ -41,9 +24,30 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgSignIn from "assets/images/signInImage.png";
 
 function SignIn() {
-  const [rememberMe, setRememberMe] = useState(true);
+  const [email, setEmail] = useState(""); // State for email
+  const [password, setPassword] = useState(""); // State for password
+  const [errorMessage, setErrorMessage] = useState(null); // State for error message
 
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent form from refreshing the page
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/transaction/api/token/", {
+        username: email, // Assuming email is used as username in your backend
+        password,
+      });
+
+      // Response contains access and refresh tokens
+      console.log(response.data);
+      sessionStorage.setItem("access_token", response.data.access); // Save access token to session storage
+      alert("Login successful! Tokens are logged to the console.");
+      navigate("/dashboard"); // Redirect
+    } catch (error) {
+      console.error("Login failed", error);
+      setErrorMessage("Invalid email or password. Please try again.");
+    }
+  };
 
   return (
     <CoverLayout
@@ -54,7 +58,7 @@ function SignIn() {
       motto="THE VISION UI DASHBOARD"
       image={bgSignIn}
     >
-      <VuiBox component="form" role="form">
+      <VuiBox component="form" role="form" onSubmit={handleSubmit}>
         <VuiBox mb={2}>
           <VuiBox mb={1} ml={0.5}>
             <VuiTypography component="label" variant="button" color="white" fontWeight="medium">
@@ -71,7 +75,13 @@ function SignIn() {
               palette.gradients.borderLight.angle
             )}
           >
-            <VuiInput type="email" placeholder="Your email..." fontWeight="500" />
+            <VuiInput
+              type="email"
+              placeholder="Your email..."
+              fontWeight="500"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} // Update email state
+            />
           </GradientBorder>
         </VuiBox>
         <VuiBox mb={2}>
@@ -93,26 +103,19 @@ function SignIn() {
             <VuiInput
               type="password"
               placeholder="Your password..."
-              sx={({ typography: { size } }) => ({
-                fontSize: size.sm,
-              })}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)} // Update password state
             />
           </GradientBorder>
         </VuiBox>
-        <VuiBox display="flex" alignItems="center">
-          <VuiSwitch color="info" checked={rememberMe} onChange={handleSetRememberMe} />
-          <VuiTypography
-            variant="caption"
-            color="white"
-            fontWeight="medium"
-            onClick={handleSetRememberMe}
-            sx={{ cursor: "pointer", userSelect: "none" }}
-          >
-            &nbsp;&nbsp;&nbsp;&nbsp;Remember me
+        {errorMessage && (
+          <VuiTypography variant="caption" color="error" fontWeight="medium">
+            {errorMessage}
           </VuiTypography>
-        </VuiBox>
+        )}
+
         <VuiBox mt={4} mb={1}>
-          <VuiButton color="info" fullWidth>
+          <VuiButton color="info" fullWidth type="submit">
             SIGN IN
           </VuiButton>
         </VuiBox>

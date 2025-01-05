@@ -59,10 +59,32 @@ import { lineChartDataDashboard } from "layouts/dashboard/data/lineChartData";
 import { lineChartOptionsDashboard } from "layouts/dashboard/data/lineChartOptions";
 import { barChartDataDashboard } from "layouts/dashboard/data/barChartData";
 import { barChartOptionsDashboard } from "layouts/dashboard/data/barChartOptions";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function Dashboard() {
   const { gradients } = colors;
   const { cardContent } = gradients;
+
+  const [transactions, setTransactions] = useState([]);
+
+  const token = sessionStorage.getItem("access_token");
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/transaction/customer-transactions/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setTransactions(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [token]);
 
   return (
     <DashboardLayout>

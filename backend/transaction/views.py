@@ -1,8 +1,9 @@
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.exceptions import PermissionDenied
-from .models import Transaction, Account
+from .models import Transaction, Account, Profile   
 from .permissions import IsCustomer
 import json
 from decimal import Decimal
@@ -11,6 +12,22 @@ from decimal import Decimal
 @api_view(['GET'])
 def index(request):
     return Response({'message': 'Hello, world!'})
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def signup(request):
+    data = json.loads(request.body)
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+    email = data.get('email')
+    password = data.get('password')
+
+    if not first_name or not last_name or not email or not password:
+        return JsonResponse({'error': 'All fields are required.'}, status=400)
+
+    user = User.objects.create_user(username=email, first_name=first_name, last_name=last_name, email=email, password=password)
+    Profile.objects.create(user=user, user_type='customer')
+
+    return JsonResponse({'message': 'User created successfully.'}, status=201)
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated, IsCustomer])
 def customer_transaction_list(request):
