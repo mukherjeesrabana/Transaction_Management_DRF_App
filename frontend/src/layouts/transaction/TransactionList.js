@@ -35,6 +35,9 @@ export default function TransactionList() {
       })
       .then((res) => {
         console.log(res.data);
+        res.data.map((transaction) => {
+          transaction.date = transaction.date.split("T")[0];
+        });
         setTransactions(res.data);
       })
       .catch((error) => {
