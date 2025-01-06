@@ -55,6 +55,7 @@ import { IoBuild } from "react-icons/io5";
 import { BsCreditCardFill } from "react-icons/bs";
 import { IoStatsChart } from "react-icons/io5";
 import { IoHome } from "react-icons/io5";
+import TransactionList from "layouts/transaction/TransactionList";
 
 const routes = [
   {
@@ -73,6 +74,15 @@ const routes = [
     route: "/tables",
     icon: <IoStatsChart size="15px" color="inherit" />,
     component: Tables,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Transactions",
+    key: "transactions",
+    route: "/transactions",
+    icon: <IoStatsChart size="15px" color="inherit" />,
+    component: TransactionList,
     noCollapse: true,
   },
   {

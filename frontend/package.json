@@ -21,8 +21,10 @@
     "@mui/material": "^5.9.2",
     "@mui/styled-engine": "5.1.1",
     "@mui/styles": "^5.2.0",
+    "@mui/x-data-grid": "^7.23.5",
     "ajv": "^8.17.1",
     "apexcharts": "^3.30.0",
+    "axios": "^1.5.0",
     "chroma-js": "2.1.2",
     "install": "^0.13.0",
     "prop-types": "15.7.2",
@@ -33,13 +35,12 @@
     "react-flatpickr": "3.10.7",
     "react-github-btn": "1.2.1",
     "react-icons": "^4.3.1",
+    "react-router": "6.3.0",
+    "react-router-dom": "6.3.0",
     "stylis": "4.0.10",
     "stylis-plugin-rtl": "2.1.0",
     "uuid": "8.3.2",
-    "web-vitals": "1.0.1",
-    "react-router": "6.3.0",
-    "react-router-dom": "6.3.0",
-    "axios": "^1.5.0"
+    "web-vitals": "1.0.1"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "5.11.4",
