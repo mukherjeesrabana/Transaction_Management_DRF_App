@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Card from "@mui/material/Card";
 
@@ -19,8 +19,14 @@ import Button from "assets/theme/components/button";
 export default function TransactionList() {
   const token = sessionStorage.getItem("access_token");
   const [transactions, setTransactions] = useState([]);
+  const fileInputRef = useRef(null);
+  const [file, setFile] = useState(null);
 
   useEffect(() => {
+    fetchTransactions();
+  }, [token]);
+
+  const fetchTransactions = () => {
     axios
       .get("http://127.0.0.1:8000/transaction/customer-transactions/", {
         headers: {
@@ -34,7 +40,7 @@ export default function TransactionList() {
       .catch((error) => {
         console.log(error);
       });
-  }, [token]);
+  };
 
   const columns = [
     {
@@ -87,6 +93,44 @@ export default function TransactionList() {
     },
   ];
 
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  useEffect(() => {
+    if (file !== null) {
+      handleUpload();
+    }
+  }, [file, token]);
+
+  const handleUpload = async () => {
+    if (!file) {
+      alert("Please select a file to upload.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/transaction/upload-transactions/",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      alert(response.data.message);
+      fetchTransactions();
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      alert("Error uploading file.");
+    }
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -95,7 +139,8 @@ export default function TransactionList() {
           <Card>
             <VuiBox display="flex" justifyContent="space-between" alignItems="center" mb="22px">
               <VuiTypography variant="lg" color="white">
-                Transactions table
+                Transactions table{" "}
+                <input type="file" accept=".xlsx" onChange={handleFileChange} ref={fileInputRef} />
               </VuiTypography>
             </VuiBox>
             <VuiBox

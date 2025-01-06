@@ -12,6 +12,8 @@ urlpatterns = [
     
 
     path('customer-transactions/', views.customer_transaction_list, name='customer-transaction-list'),
+    path('upload-transactions/', views.upload_transactions)
+   
     # path('customer-accounts/', views.CustomerAccountList.as_view(), name='customer-account-list'),
     # path('accounts/<int:account_id>/transactions/', views.AccountTransactionList.as_view(), name='account-transaction-list'),
     # path('customer-transactions/create/', views.CustomerTransactionCreateView.as_view(), name='customer-transaction-create'),

@@ -7,6 +7,7 @@ from .models import Transaction, Account, Profile
 from .permissions import IsCustomer
 import json
 from decimal import Decimal
+import pandas as pd
 # Create your views here.
 
 @api_view(['GET'])
@@ -71,7 +72,49 @@ def customer_transaction_list(request):
             'amount': transaction.amount,
             'available_balance': transaction.available_balance,
         }, status=201)
-    
+
+@api_view(['POST']) 
+@permission_classes([IsAuthenticated, IsCustomer])  
+def upload_transactions(request):
+    file=request.FILES['file']
+    if not file:
+        return JsonResponse({'error': 'No file uploaded.'}, status=400)
+    try:
+        df= pd.read_excel(file)
+        for _, row in df.iterrows():
+            account_number = row['account_number']
+            transaction_type = row['transaction_type']
+            description = row['description']
+            amount = row['amount']
+            try:
+                account = Account.objects.get(account_number=account_number, profile__user=request.user)
+            except Account.DoesNotExist:
+                return JsonResponse({'error': f'Account with account number {account_number} does not exist.'}, status=400) 
+
+            if Transaction.objects.filter(account=account, transaction_type=transaction_type, description=description, amount=amount).exists():
+                continue  
+
+            if transaction_type == 'deposit':
+                available_balance = account.balance + amount
+            else:
+                available_balance = account.balance - amount
+
+            Transaction.objects.create(
+                account=account,
+                transaction_type=transaction_type,
+                description=description,
+                amount=amount,
+                available_balance=available_balance
+            )
+
+            account.balance = available_balance
+            account.save()
+
+        return JsonResponse({'message': 'Transactions uploaded successfully.'}, status=201)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+
 
 
 # class CustomerTransactionList(generics.ListCreateAPIView):
