@@ -47,6 +47,9 @@ import SignUp from "layouts/authentication/sign-up";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
+import TransactionList from "layouts/transactions/TransactionList";
+import TransactionAddForm from "layouts/transactions/TransactionAddForm";
+import TransactionAdd from "layouts/transactions/TransactionAdd";
 
 const routes = [
   {
@@ -57,46 +60,24 @@ const routes = [
     route: "/dashboard",
     component: <Dashboard />,
   },
+
   {
     type: "collapse",
-    name: "Tables",
-    key: "tables",
+    name: "Transactions",
+    key: "transactions",
     icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
-    component: <Tables />,
+    route: "/transactions",
+    component: <TransactionList />,
   },
   {
     type: "collapse",
-    name: "Billing",
-    key: "billing",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: <Billing />,
+    name: "Add Transaction",
+    key: "addtransactions",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/add-transaction",
+    component: <TransactionAdd />,
   },
-  {
-    type: "collapse",
-    name: "RTL",
-    key: "rtl",
-    icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-    route: "/rtl",
-    component: <RTL />,
-  },
-  {
-    type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: "/notifications",
-    component: <Notifications />,
-  },
-  {
-    type: "collapse",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
-    component: <Profile />,
-  },
+
   {
     type: "collapse",
     name: "Sign In",

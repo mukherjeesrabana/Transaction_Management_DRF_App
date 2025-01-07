@@ -1,94 +1,108 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// react-router-dom components
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
-// @mui material components
-import Card from "@mui/material/Card";
+import { useNavigate } from "react-router-dom"; // For navigation
 import Checkbox from "@mui/material/Checkbox";
+import Card from "@mui/material/Card";
 
-// Material Dashboard 2 React components
+import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import CoverLayout from "../components/CoverLayout";
 import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
+import MDTypography from "components/MDTypography";
+import axios from "axios";
 
-// Authentication layout components
-import CoverLayout from "layouts/authentication/components/CoverLayout";
+const SignupForm = () => {
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+  });
 
-// Images
-import bgImage from "assets/images/bg-sign-up-cover.jpeg";
+  const navigate = useNavigate();
 
-function Cover() {
+  // Handle form input changes
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(formData);
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/transaction/signup/", {
+        ...formData,
+      });
+      console.log("Signup successful:", response.data);
+      alert("Signup successful. Please login to continue.");
+      navigate("/authentication/sign-in");
+    } catch (error) {
+      console.error("Error signing up:", error);
+    }
+  };
+
   return (
     <CoverLayout image={bgImage}>
       <Card>
-        <MDBox
-          variant="gradient"
-          bgColor="info"
-          borderRadius="lg"
-          coloredShadow="success"
-          mx={2}
-          mt={-3}
-          p={3}
-          mb={1}
-          textAlign="center"
-        >
-          <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Join us today
-          </MDTypography>
-          <MDTypography display="block" variant="button" color="white" my={1}>
-            Enter your email and password to register
-          </MDTypography>
-        </MDBox>
         <MDBox pt={4} pb={3} px={3}>
-          <MDBox component="form" role="form">
+          <form onSubmit={handleSubmit}>
             <MDBox mb={2}>
-              <MDInput type="text" label="Name" variant="standard" fullWidth />
+              <MDInput
+                type="text"
+                label="First Name"
+                name="first_name"
+                variant="standard"
+                fullWidth
+                value={formData.first_name}
+                onChange={handleChange}
+                required
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" variant="standard" fullWidth />
+              <MDInput
+                type="text"
+                label="Last Name"
+                name="last_name"
+                variant="standard"
+                fullWidth
+                value={formData.last_name}
+                onChange={handleChange}
+                required
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" variant="standard" fullWidth />
+              <MDInput
+                type="email"
+                label="Email Address"
+                name="email"
+                variant="standard"
+                fullWidth
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
             </MDBox>
-            <MDBox display="flex" alignItems="center" ml={-1}>
-              <Checkbox />
-              <MDTypography
-                variant="button"
-                fontWeight="regular"
-                color="text"
-                sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
-              >
-                &nbsp;&nbsp;I agree the&nbsp;
-              </MDTypography>
-              <MDTypography
-                component="a"
-                href="#"
-                variant="button"
-                fontWeight="bold"
-                color="info"
-                textGradient
-              >
-                Terms and Conditions
-              </MDTypography>
+            <MDBox mb={2}>
+              <MDInput
+                type="password"
+                label="Password"
+                name="password"
+                variant="standard"
+                fullWidth
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
-                sign in
+              <MDButton type="submit" variant="gradient" color="info" fullWidth>
+                Sign Up
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
@@ -106,11 +120,11 @@ function Cover() {
                 </MDTypography>
               </MDTypography>
             </MDBox>
-          </MDBox>
+          </form>
         </MDBox>
       </Card>
     </CoverLayout>
   );
-}
+};
 
-export default Cover;
+export default SignupForm;
