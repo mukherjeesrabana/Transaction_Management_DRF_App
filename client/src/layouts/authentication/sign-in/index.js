@@ -50,7 +50,7 @@ function Basic() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard";
+  const from = location.state?.from?.pathname || "/reports";
   console.log(location.state);
 
   // Handle form input changes

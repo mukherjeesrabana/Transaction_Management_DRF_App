@@ -25,7 +25,7 @@ export default function Unauthorized({ openstate, content, onLogin }) {
     >
       <Box sx={style}>
         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-          {content}
+          Seems like your session expired. Please Login to continue
         </Typography>
         <Button variant="text" onClick={onLogin}>
           Login

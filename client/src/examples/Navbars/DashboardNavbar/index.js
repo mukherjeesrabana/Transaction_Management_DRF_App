@@ -16,7 +16,7 @@ Coded by www.creative-tim.com
 import { useState, useEffect } from "react";
 
 // react-router components
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -52,6 +52,7 @@ import {
   setMiniSidenav,
   setOpenConfigurator,
 } from "context";
+import MDTypography from "components/MDTypography";
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
@@ -90,6 +91,14 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    sessionStorage.clear();
+    navigate("/authentication/sign-in");
+  };
+
+  const firstName = sessionStorage.getItem("firstName");
 
   // Render the notifications menu
   const renderMenu = () => (
@@ -104,7 +113,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
       onClose={handleCloseMenu}
       sx={{ mt: 2 }}
     >
-      <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
+      <NotificationItem icon={<Icon>email</Icon>} title="Logout" onClick={handleLogout} />
       <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
       <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
     </Menu>
@@ -136,47 +145,9 @@ function DashboardNavbar({ absolute, light, isMini }) {
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
             <MDBox pr={1}>
-              <MDInput label="Search here" />
-            </MDBox>
-            <MDBox color={light ? "white" : "inherit"}>
-              <Link to="/authentication/sign-in/basic">
-                <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <Icon sx={iconsStyle}>account_circle</Icon>
-                </IconButton>
-              </Link>
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarMobileMenu}
-                onClick={handleMiniSidenav}
-              >
-                <Icon sx={iconsStyle} fontSize="medium">
-                  {miniSidenav ? "menu_open" : "menu"}
-                </Icon>
-              </IconButton>
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarIconButton}
-                onClick={handleConfiguratorOpen}
-              >
-                <Icon sx={iconsStyle}>settings</Icon>
-              </IconButton>
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarIconButton}
-                aria-controls="notification-menu"
-                aria-haspopup="true"
-                variant="contained"
-                onClick={handleOpenMenu}
-              >
-                <Icon sx={iconsStyle}>notifications</Icon>
-              </IconButton>
-              {renderMenu()}
+              <MDTypography style={{ cursor: "pointer" }} onClick={handleLogout}>
+                Logout
+              </MDTypography>
             </MDBox>
           </MDBox>
         )}
