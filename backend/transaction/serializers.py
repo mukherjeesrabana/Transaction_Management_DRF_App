@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Profile, Account, Transaction
+from .models import Profile, Account, CustomerTransaction
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -45,11 +45,11 @@ class AccountSerializer(serializers.ModelSerializer):
         instance.account_name = validated_data.get('account_name', instance.account_name)
         instance.save()
         return instance
-class TransactionSerializer(serializers.ModelSerializer):
+class CustomerTransactionSerializer(serializers.ModelSerializer):
     account = serializers.PrimaryKeyRelatedField(queryset=Account.objects.all())
 
     class Meta:
-        model = Transaction
+        model = CustomerTransaction
         fields = ['id', 'date', 'account', 'transaction_type', 'description', 'amount', 'available_balance']
         read_only_fields = ['available_balance']
 

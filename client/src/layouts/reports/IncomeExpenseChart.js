@@ -1,24 +1,22 @@
-import React from "react";
 import PropTypes from "prop-types";
-import Chart from "react-google-charts";
+import React, { useEffect, useState } from "react";
+import { Chart } from "react-google-charts";
 
-const TransactionSummaryChart = ({ data }) => {
-  // Transform data into Google Charts format
+const IncomeVsExpensesChart = ({ data }) => {
   const chartData = [
-    ["Transaction Type", "Total Amount"], // Header row
+    ["Type", "Amount"], // Header row
     ...data.map((item) => [
-      item.transaction_type,
-      parseInt(item.total_amount, 10), // Convert total_amount to a number
+      item.type,
+      parseInt(item.amount, 10), // Convert total_amount to a number
     ]),
   ];
-
   return (
     <div>
       <Chart
         chartType="PieChart"
         data={chartData}
         options={{
-          title: "Transaction Summary",
+          title: "Income vs Expenses",
           is3D: true, // Makes the chart 3D (optional)
           pieHole: 0.4, // For a doughnut chart, set this value between 0 and 1
           legend: { position: "bottom" },
@@ -30,9 +28,8 @@ const TransactionSummaryChart = ({ data }) => {
     </div>
   );
 };
-
-TransactionSummaryChart.propTypes = {
+IncomeVsExpensesChart.propTypes = {
   data: PropTypes.array.isRequired,
 };
 
-export default TransactionSummaryChart;
+export default IncomeVsExpensesChart;

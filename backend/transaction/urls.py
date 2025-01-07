@@ -14,8 +14,9 @@ urlpatterns = [
     path('customer-transactions/', views.customer_transaction_list, name='customer-transaction-list'),
     path('upload-transactions/', views.upload_transactions),
     path('transaction-summary/', views.transaction_summary),
-    path('account-balance/', views.account_balance),
-    path('monthly-transactions/', views.monthly_transactions),
+    path('income-vs-expenses/', views.income_vs_expenses, name='income-vs-expenses'),
+    path('description-wise-expense-breakdown/', views.description_wise_expense_breakdown, name='description-wise-expense-breakdown')
+   
    
     # path('monthly-spending/', views.monthly_spending),
     # path('monthly-income/', views.monthly_income),
