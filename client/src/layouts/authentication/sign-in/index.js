@@ -16,7 +16,7 @@ Coded by www.creative-tim.com
 import { useState } from "react";
 
 // react-router-dom components
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -49,6 +49,9 @@ function Basic() {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard";
+  console.log(location.state);
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -73,7 +76,7 @@ function Basic() {
       console.log(response.data);
       sessionStorage.setItem("access_token", response.data.access); // Save access token to session storage
       alert("Login successful! Tokens are logged to the console.");
-      navigate("/dashboard"); // Redirect
+      navigate(from, { replace: true });
     } catch (error) {
       console.error("Login failed", error);
     }

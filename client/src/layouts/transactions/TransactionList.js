@@ -5,13 +5,17 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import Unauthorized from "layouts/reusablemodals.js/Unauthorized";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function TransactionList() {
   const token = sessionStorage.getItem("access_token");
   const [transactions, setTransactions] = useState([]);
+  const [unauthorized, setUnauthorized] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
     fetchTransactions();
   }, [token]);
@@ -31,8 +35,15 @@ export default function TransactionList() {
         setTransactions(res.data);
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.response.data);
+        console.log(error.status);
+        if (error.status === 401) {
+          setUnauthorized(true);
+        }
       });
+  };
+  const handleLoginRedirect = () => {
+    navigate("/authentication/sign-in", { state: { from: location } });
   };
   const columns = [
     {
@@ -81,6 +92,14 @@ export default function TransactionList() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
+      {unauthorized && (
+        <Unauthorized
+          openstate={unauthorized}
+          content="Please login to continue"
+          onLogin={handleLoginRedirect}
+        />
+      )}
+
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
