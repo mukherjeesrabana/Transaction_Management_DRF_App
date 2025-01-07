@@ -50,6 +50,8 @@ import Icon from "@mui/material/Icon";
 import TransactionList from "layouts/transactions/TransactionList";
 import TransactionAddForm from "layouts/transactions/TransactionAddForm";
 import TransactionAdd from "layouts/transactions/TransactionAdd";
+import Reports from "layouts/reports/Reports";
+import AccountList from "layouts/accounts/AccountList";
 
 const routes = [
   {
@@ -61,6 +63,14 @@ const routes = [
     component: <Dashboard />,
   },
 
+  {
+    type: "collapse",
+    name: "Accounts",
+    key: "accounts",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/accounts",
+    component: <AccountList />,
+  },
   {
     type: "collapse",
     name: "Transactions",
@@ -76,6 +86,14 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/add-transaction",
     component: <TransactionAdd />,
+  },
+  {
+    type: "collapse",
+    name: "Reports",
+    key: "reports",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/reports",
+    component: <Reports />,
   },
 
   {

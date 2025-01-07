@@ -12,9 +12,16 @@ urlpatterns = [
     
 
     path('customer-transactions/', views.customer_transaction_list, name='customer-transaction-list'),
-    path('upload-transactions/', views.upload_transactions)
+    path('upload-transactions/', views.upload_transactions),
+    path('transaction-summary/', views.transaction_summary),
+    path('account-balance/', views.account_balance),
+    path('monthly-transactions/', views.monthly_transactions),
    
-    # path('customer-accounts/', views.CustomerAccountList.as_view(), name='customer-account-list'),
-    # path('accounts/<int:account_id>/transactions/', views.AccountTransactionList.as_view(), name='account-transaction-list'),
-    # path('customer-transactions/create/', views.CustomerTransactionCreateView.as_view(), name='customer-transaction-create'),
+    # path('monthly-spending/', views.monthly_spending),
+    # path('monthly-income/', views.monthly_income),
+    # path('monthly-net/', views.monthly_net),
+    
+
+   
+   
 ]

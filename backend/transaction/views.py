@@ -8,6 +8,7 @@ from .permissions import IsCustomer
 import json
 from decimal import Decimal
 import pandas as pd
+from django.db.models import Sum
 # Create your views here.
 
 @api_view(['GET'])
@@ -114,43 +115,35 @@ def upload_transactions(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, IsCustomer])
+def transaction_summary(request):
+    transactions = Transaction.objects.filter(account__profile__user=request.user)
+    # print(transactions)
+    # summary = {
+    #     'total_deposits': sum(transaction.amount for transaction in transactions if transaction.transaction_type == 'deposit'),
+    #     'total_withdrawals': sum(transaction.amount for transaction in transactions if transaction.transaction_type == 'withdrawal'),
+    #     'total_transactions': transactions.count(),
+    # }
+    summary = transactions.values('transaction_type').annotate(total_amount=Sum('amount'))
+    print(summary)
+    return JsonResponse(list(summary), safe=False)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, IsCustomer])
+def account_balance(request):
+    accounts = Account.objects.filter(profile__user=request.user)
+    balance_data = accounts.values('account_number', 'balance')
+    return JsonResponse(list(balance_data), safe=False)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, IsCustomer])
+def monthly_transactions(request):
+    transactions = Transaction.objects.filter(account__profile__user=request.user)
+    monthly_data = transactions.annotate(month=TruncMonth('date')).values('month').annotate(total_amount=Sum('amount'))
+    return JsonResponse(list(monthly_data), safe=False)
 
 
 
-# class CustomerTransactionList(generics.ListCreateAPIView):
-#     serializer_class = TransactionSerializer
-#     permission_classes = [IsAuthenticated, IsCustomer]
-#     def get_queryset(self):
-#         return Transaction.objects.filter(account__profile__user=self.request.user)
-# class CustomerAccountList(generics.ListCreateAPIView):
-#     serializer_class = AccountSerializer
-#     permission_classes = [IsAuthenticated, IsCustomer]
-#     def get_queryset(self):
-#         return Account.objects.filter(profile__user=self.request.user)
-# class AccountTransactionList(generics.ListCreateAPIView):
-#     serializer_class = TransactionSerializer
 
-#     permission_classes = [IsAuthenticated, IsCustomer]
-#     def get_queryset(self):
-#         return Transaction.objects.filter(account__id=self.kwargs['account_id'])
 
-# class CustomerTransactionCreateView(generics.CreateAPIView):
-    
-    # serializer_class = TransactionSerializer
-    # permission_classes = [IsAuthenticated, IsCustomer]
-
-    # def perform_create(self, serializer):
-    #     account = serializer.validated_data['account']
-    #     if account.profile.user != self.request.user:
-    #         raise PermissionDenied("You do not have permission to create a transaction for this account.")
-    #     serializer.save()
-    # def perform_update(self, serializer):
-    #     account = serializer.validated_data['account']
-    #     if account.profile.user != self.request.user:
-    #         raise PermissionDenied("You do not have permission to update a transaction for this account.")
-    #     serializer.save()   
-    # def perform_destroy(self, serializer):
-    #     account = serializer.validated_data['account']
-    #     if account.profile.user != self.request.user:
-    #         raise PermissionDenied("You do not have permission to delete a transaction for this account.")
-    #     serializer.delete()
