@@ -4,7 +4,7 @@ import Chart from "react-google-charts";
 
 const DescriptionWiseExpenseBreakdown = ({ data }) => {
   const chartData = [
-    ["ID", "Day of the Month", "Amount", "Transaction Type"], // Header
+    ["ID", "Day of the Month", "Amount", "Transaction Type", "Amount"], // Header
     ...data.map((item, index) => {
       const date = new Date(item.date);
       const dayOfMonth = isNaN(date.getDate()) ? 1 : date.getDate();
@@ -14,6 +14,7 @@ const DescriptionWiseExpenseBreakdown = ({ data }) => {
         dayOfMonth, // Numeric day of the month
         parseFloat(item.amount), // Numeric amount
         item.transaction_type,
+        parseFloat(item.amount), // Numeric amount
       ];
     }),
   ];
@@ -28,16 +29,24 @@ const DescriptionWiseExpenseBreakdown = ({ data }) => {
           width="100%"
           height="700px"
           options={{
-            title: "Transaction Breakdown",
+            title: "Expenses Breakdown",
             hAxis: {
               title: "Day of the Month",
-              ticks: Array.from({ length: 7 }, (_, i) => i * 3 + 1).filter((day) => day <= 31), // Generate whole number ticks from 1 to 31
+              ticks: Array.from({ length: 31 }, (_, i) => i * 4 + 1).filter((day) => day <= 31), // Generate whole number ticks from 1 to 31
             },
             vAxis: {
               title: "Amount",
               viewWindow: { max: vAxisMax, min: 0 }, // Ensure bubbles don't get cut off
             },
-            bubble: { textStyle: { fontSize: 12 } },
+            bubble: {
+              textStyle: {
+                fontSize: 20,
+                fontName: "Times-Roman",
+                color: "green",
+                bold: true,
+                italic: true,
+              },
+            },
           }}
         />
       ) : (
