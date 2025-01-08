@@ -17,19 +17,27 @@ const DescriptionWiseExpenseBreakdown = ({ data }) => {
       ];
     }),
   ];
+  const maxAmount = Math.max(...data.map((item) => parseFloat(item.amount))) || 0;
+  const vAxisMax = maxAmount + maxAmount * 0.1;
   return (
     <div>
       {chartData.length > 1 ? (
         <Chart
           chartType="BubbleChart"
           data={chartData}
-          width="1000px"
-          height="900px"
+          width="100%"
+          height="700px"
           options={{
             title: "Transaction Breakdown",
-            hAxis: { title: "Day of the Month" },
-            vAxis: { title: "Amount" },
-            bubble: { textStyle: { fontSize: 20 } },
+            hAxis: {
+              title: "Day of the Month",
+              ticks: Array.from({ length: 7 }, (_, i) => i * 3 + 1).filter((day) => day <= 31), // Generate whole number ticks from 1 to 31
+            },
+            vAxis: {
+              title: "Amount",
+              viewWindow: { max: vAxisMax, min: 0 }, // Ensure bubbles don't get cut off
+            },
+            bubble: { textStyle: { fontSize: 12 } },
           }}
         />
       ) : (
