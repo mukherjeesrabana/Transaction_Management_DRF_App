@@ -9,7 +9,7 @@ import json
 from decimal import Decimal
 import pandas as pd
 from django.db.models import Sum
-from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncMonth, TruncDay
 from django.utils.timezone import now
 from datetime import timedelta
 # Create your views here.
@@ -182,6 +182,36 @@ def description_wise_expense_breakdown(request):
         for item in breakdown
     ]
 
+    return JsonResponse(data, safe=False)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, IsCustomer])
+def daily_expense_income_tracker(request):
+    start_date = now().replace(day=1)
+    end_date = start_date + timedelta(days=31)
+    debit_transactions = CustomerTransaction.objects.filter(account__profile__user=request.user, date__range=[start_date, end_date], transaction_type__in=['withdrawal', 'transfer'])
+    credit_transactions = CustomerTransaction.objects.filter(account__profile__user=request.user, date__range=[start_date, end_date], transaction_type__in=['deposit'])
+    
+    daily_expenses = debit_transactions.annotate(day=TruncDay('date')).values('day').annotate(total_amount=Sum('amount')).order_by('day')
+    daily_incomes = credit_transactions.annotate(day=TruncDay('date')).values('day').annotate(total_amount=Sum('amount')).order_by('day')
+    
+    # Create a dictionary to store the combined data
+    combined_data = {}
+    
+    for item in daily_expenses:
+        day = item['day'].strftime('%Y-%m-%d')
+        combined_data[day] = {'expenses': item['total_amount'], 'incomes': 0}
+    
+    for item in daily_incomes:
+        day = item['day'].strftime('%Y-%m-%d')
+        if day in combined_data:
+            combined_data[day]['incomes'] = item['total_amount']
+        else:
+            combined_data[day] = {'expenses': 0, 'incomes': item['total_amount']}
+    data = [["Date", "Expenses", "Incomes"]]
+    for day, amounts in sorted(combined_data.items()):
+        data.append([day, amounts['expenses'], amounts['incomes']])
+    
     return JsonResponse(data, safe=False)
 
 

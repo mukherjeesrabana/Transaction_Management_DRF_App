@@ -15,7 +15,8 @@ urlpatterns = [
     path('upload-transactions/', views.upload_transactions),
     path('transaction-summary/', views.transaction_summary),
     path('income-vs-expenses/', views.income_vs_expenses, name='income-vs-expenses'),
-    path('description-wise-expense-breakdown/', views.description_wise_expense_breakdown, name='description-wise-expense-breakdown')
+    path('description-wise-expense-breakdown/', views.description_wise_expense_breakdown, name='description-wise-expense-breakdown'),
+    path('daily-expense-income-tracker/', views.daily_expense_income_tracker, name='daily-expense-income-tracker')
    
    
     # path('monthly-spending/', views.monthly_spending),

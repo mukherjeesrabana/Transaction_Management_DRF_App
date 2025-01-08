@@ -8,7 +8,7 @@ const DescriptionWiseExpenseBreakdown = ({ data }) => {
     ...data.map((item, index) => {
       const date = new Date(item.date);
       const dayOfMonth = isNaN(date.getDate()) ? 1 : date.getDate();
-      console.log(dayOfMonth);
+
       return [
         item.description, // ID
         dayOfMonth, // Numeric day of the month

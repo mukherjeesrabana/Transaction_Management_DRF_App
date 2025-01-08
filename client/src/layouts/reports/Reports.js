@@ -9,6 +9,7 @@ import Unauthorized from "layouts/reusablemodals.js/Unauthorized";
 import { useLocation, useNavigate } from "react-router-dom";
 import IncomeVsExpensesChart from "./IncomeExpenseChart";
 import DescriptionWiseExpenseBreakdown from "./DescriptionWiseExpenseBreakdown";
+import DailyExpenseTrackerChart from "./DailyExpenseTrackerChart";
 
 export default function Reports() {
   const [transactionSummaryData, setTransactionSummaryData] = useState([]);
@@ -114,6 +115,11 @@ export default function Reports() {
           <Grid item xs={12} md={6} lg={6}>
             <MDBox mb={1.5}>
               <DescriptionWiseExpenseBreakdown data={descriptionWiseExpense} />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={6}>
+            <MDBox mb={1.5}>
+              <DailyExpenseTrackerChart />
             </MDBox>
           </Grid>
         </Grid>
