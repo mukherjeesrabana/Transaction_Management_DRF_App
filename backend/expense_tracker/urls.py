@@ -1,0 +1,24 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('signup/', views.signup, name='signup'),
+    path('signin/', views.signin, name='signin'),
+    path('category-list/', views.category_list, name='category-list'),
+    path('transaction-list/', views.transaction_list, name='transaction-list'),
+    path('upload-transactions/', views.upload_transactions, name='upload-transactions'),
+    path('upload-categories/', views.upload_categories, name='upload-categories'),
+    path('edit-transaction/<int:transaction_id>/', views.edit_transaction, name='edit-transaction'),
+    path('delete-transaction/<int:transaction_id>/', views.delete_transaction, name='delete-transaction'),
+    path('edit-category/<int:category_id>/', views.edit_category, name='edit-category'),
+    path('delete-category/<int:category_id>/', views.delete_category, name='delete-category'),
+
+    path('monthly-expenses-by-category/<int:year>/<int:month>/', views.monthly_expenses_by_category, name='monthly-expenses-by-category'),
+    path('monthly-credits-by-category/<int:year>/<int:month>/', views.monthly_credits_by_category, name='monthly-credits-by-category'),
+    path('monthly-total-credits/<int:year>/<int:month>/', views.monthly_total_credits, name='monthly-total-credits'),
+    path('monthly-total-expenses/<int:year>/<int:month>/', views.monthly_total_expenses, name='monthly-total-expenses'),
+    path('monthly-available-balance/<int:year>/<int:month>/', views.monthly_available_balance, name='monthly-available-balance'),
+    path('monthly-overall-overview/<int:year>/<int:month>/', views.monthly_overall_overview, name='monthly-overall-overview'),
+    path('monthly-categorywise-breakdown/<int:year>/<int:month>/', views.monthly_categorywise_breakdown, name='monthly-categorywise-breakdown'),
+    # other paths...
+]

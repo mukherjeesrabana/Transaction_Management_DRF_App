@@ -1,15 +1,24 @@
 import { Card } from "@mui/material";
 import axios from "axios";
 import MDBox from "components/MDBox";
+import Unauthorized from "layouts/reusablemodals.js/Unauthorized";
+import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-export default function UploadTransaction() {
+export default function UploadTransaction({ fetchTrasnsactions }) {
   const token = sessionStorage.getItem("access_token");
   const fileInputRef = useRef(null);
   const [file, setFile] = useState(null);
 
+  const [unauthorized, setUnauthorized] = useState(false);
+
+  const location = useLocation();
   const navigate = useNavigate();
+
+  const handleLoginRedirect = () => {
+    navigate("/authentication/sign-in", { state: { from: location } });
+  };
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -32,7 +41,7 @@ export default function UploadTransaction() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/transaction/upload-transactions/",
+        "http://127.0.0.1:8000/expense-tracker/upload-transactions/",
         formData,
         {
           headers: {
@@ -42,12 +51,31 @@ export default function UploadTransaction() {
         }
       );
       alert(response.data.message);
-      navigate("/transactions");
+      fetchTrasnsactions();
     } catch (error) {
       console.error("Error uploading file:", error);
       alert("Error uploading file.");
+      if (error.status === 401) {
+        setUnauthorized(true);
+      } else if (error.status == 400) {
+        alert(error.response.data.error);
+      }
     }
   };
 
-  return <input type="file" accept=".xlsx" onChange={handleFileChange} ref={fileInputRef} />;
+  return (
+    <>
+      {unauthorized && (
+        <Unauthorized
+          openstate={unauthorized}
+          content="Please login to continue"
+          onLogin={handleLoginRedirect}
+        />
+      )}
+      <input type="file" accept=".xlsx" onChange={handleFileChange} ref={fileInputRef} />;
+    </>
+  );
 }
+UploadTransaction.propTypes = {
+  fetchTrasnsactions: PropTypes.func,
+};

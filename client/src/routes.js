@@ -37,21 +37,15 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
-import Tables from "layouts/tables";
-import Billing from "layouts/billing";
-import RTL from "layouts/rtl";
-import Notifications from "layouts/notifications";
-import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
-import TransactionList from "layouts/transactions/TransactionList";
-import TransactionAddForm from "layouts/transactions/TransactionAddForm";
-import TransactionAdd from "layouts/transactions/TransactionAdd";
-import Reports from "layouts/reports/Reports";
-import AccountList from "layouts/accounts/AccountList";
+
+import Transaction from "layouts/expense_tracker/transaction/Transaction";
+import Category from "layouts/expense_tracker/category/Category";
+import Reports from "layouts/expense_tracker/reports/Reports";
 
 const routes = [
   {
@@ -65,28 +59,21 @@ const routes = [
 
   {
     type: "collapse",
-    name: "Accounts",
-    key: "accounts",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/accounts",
-    component: <AccountList />,
-  },
-  {
-    type: "collapse",
-    name: "Transactions",
+    name: "Add Transactions",
     key: "transactions",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/transactions",
-    component: <TransactionList />,
+    component: <Transaction />,
   },
   {
     type: "collapse",
-    name: "Add Transaction",
-    key: "addtransactions",
+    name: "Add Categories",
+    key: "categories",
     icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/add-transaction",
-    component: <TransactionAdd />,
+    route: "/categories",
+    component: <Category />,
   },
+
   {
     type: "collapse",
     name: "Reports",

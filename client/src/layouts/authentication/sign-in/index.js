@@ -41,6 +41,7 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import axios from "axios";
+import MDAlert from "components/MDAlert";
 
 function Basic() {
   const [formData, setFormData] = useState({
@@ -50,8 +51,8 @@ function Basic() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/reports";
-  console.log(location.state);
+  const from = location.state?.from?.pathname || "/transactions";
+  // console.log(location.state);
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -67,7 +68,7 @@ function Basic() {
     e.preventDefault();
     console.log(formData);
     try {
-      const response = await axios.post("http://127.0.0.1:8000/transaction/api/token/", {
+      const response = await axios.post("http://127.0.0.1:8000/expense-tracker/signin/", {
         username: formData.email, // Assuming email is used as username in your backend
         password: formData.password,
       });
@@ -75,10 +76,15 @@ function Basic() {
       // Response contains access and refresh tokens
       console.log(response.data);
       sessionStorage.setItem("access_token", response.data.access); // Save access token to session storage
+      sessionStorage.setItem("name", `${response.data.first_name} ${response.data.last_name}`); // Save access token to session storage
+      sessionStorage.setItem("email", response.data.email); // Save access token to session storage
       alert("Login successful! Tokens are logged to the console.");
       navigate(from, { replace: true });
     } catch (error) {
       console.error("Login failed", error);
+      if (error.status == 400) {
+        alert(error.response.data.error);
+      }
     }
   };
 

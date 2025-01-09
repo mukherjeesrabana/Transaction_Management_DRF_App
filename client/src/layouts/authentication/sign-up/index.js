@@ -36,7 +36,7 @@ const SignupForm = () => {
     e.preventDefault();
     console.log(formData);
     try {
-      const response = await axios.post("http://127.0.0.1:8000/transaction/signup/", {
+      const response = await axios.post("http://127.0.0.1:8000/expense-tracker/signup/", {
         ...formData,
       });
       console.log("Signup successful:", response.data);
@@ -44,6 +44,9 @@ const SignupForm = () => {
       navigate("/authentication/sign-in");
     } catch (error) {
       console.error("Error signing up:", error);
+      if (error.status == 400) {
+        alert(error.response.data.error);
+      }
     }
   };
 

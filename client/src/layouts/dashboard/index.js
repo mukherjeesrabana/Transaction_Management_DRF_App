@@ -34,71 +34,95 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Unauthorized from "layouts/reusablemodals.js/Unauthorized";
+import MonthYearSelector from "layouts/expense_tracker/reports/MonthYearSelector";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
+  const token = sessionStorage.getItem("access_token");
+  const [data, setData] = useState({});
+
+  const [unauthorized, setUnauthorized] = useState(false);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLoginRedirect = () => {
+    navigate("/authentication/sign-in", { state: { from: location } });
+  };
+
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [month, setMonth] = useState(new Date().getMonth() + 1);
+
+  const handleMonthYearChange = (selectedYear, selectedMonth) => {
+    setYear(selectedYear);
+    setMonth(selectedMonth);
+  };
+
+  const fetchMonthlyOverview = () => {
+    axios
+      .get(`http://127.0.0.1:8000/expense-tracker/monthly-overall-overview/${year}/${month}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setData(res.data);
+      })
+      .catch((e) => {
+        if (e.response && e.response.status === 401) {
+          setUnauthorized(true);
+        }
+      });
+  };
+
+  useEffect(() => {
+    fetchMonthlyOverview();
+  }, [token, year, month]);
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
+      {unauthorized && (
+        <Unauthorized
+          openstate={unauthorized}
+          content="Please login to continue"
+          onLogin={handleLoginRedirect}
+        />
+      )}
       <MDBox py={3}>
+        <MonthYearSelector onChange={handleMonthYearChange} />
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="dark"
-                icon="weekend"
-                title="Bookings"
-                count={281}
-                percentage={{
-                  color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                icon="leaderboard"
-                title="Today's Users"
-                count="2,300"
-                percentage={{
-                  color: "success",
-                  amount: "+3%",
-                  label: "than last month",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
                 color="success"
-                icon="store"
-                title="Revenue"
-                count="34k"
-                percentage={{
-                  color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
-                }}
+                icon="weekend"
+                title="Monthly Credits"
+                count={data.total_credits}
               />
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="primary"
-                icon="person_add"
-                title="Followers"
-                count="+91"
-                percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "Just updated",
-                }}
+                color="error"
+                icon="leaderboard"
+                title="Monthly Expenses"
+                count={data.total_expenses}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                icon="store"
+                title="Monthly Available Balance"
+                count={data.available_balance}
               />
             </MDBox>
           </Grid>
