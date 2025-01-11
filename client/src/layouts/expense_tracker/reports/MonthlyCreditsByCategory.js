@@ -31,7 +31,10 @@ const MonthlyCreditsByCategoryChart = ({ year, month }) => {
         );
         const formattedData = [
           ["Category", "Amount"],
-          ...result.data.map((item) => [item.category, parseFloat(item.total_amount)]),
+          ...result.data.map((item) => [
+            `${item.description} [${item.category}]`,
+            parseFloat(item.total_amount),
+          ]),
         ];
         setData(formattedData);
       } catch (error) {

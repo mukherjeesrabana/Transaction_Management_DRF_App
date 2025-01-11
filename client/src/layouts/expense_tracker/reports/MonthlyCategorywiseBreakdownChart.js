@@ -32,7 +32,7 @@ const MonthlyCategorywiseBreakdownChart = ({ year, month }) => {
         const formattedData = [
           ["Category", "Credit", "Expense"],
           ...result.data.map((item) => [
-            item.category,
+            `${item.description} [${item.category}]`,
             item.transaction_type === "Credit" ? parseFloat(item.total_amount) : 0,
             item.transaction_type === "Expense" ? parseFloat(item.total_amount) : 0,
           ]),

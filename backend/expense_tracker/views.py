@@ -226,21 +226,40 @@ def upload_categories(request):
         )
 
     return JsonResponse({'message': 'Categories uploaded successfully'}, status=status.HTTP_201_CREATED)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def monthly_transactions(request, year, month):
+    transactions = Transaction.objects.filter(
+        user=request.user,
+        date__year=year,
+        date__month=month,
+    )
+    data = [
+            {
+                "id": transaction.id,
+                "date": transaction.date,
+                "transaction_type": transaction.transaction_type,
+                "amount": transaction.amount,
+                "category": transaction.category.category_name,
+                "description": transaction.description,
+                "user": transaction.user.username
+            }
+            for transaction in transactions
+        ]
+    return JsonResponse(data, safe=False)
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def monthly_expenses_by_category(request, year, month):
-    print(year, month)
     transactions = Transaction.objects.filter(
         user=request.user,
         date__year=year,
         date__month=month,
         transaction_type='Expense'
     )
-    print(transactions)
-    expenses = transactions.values('category__category_name').annotate(total_amount=Sum('amount')).order_by('-total_amount')
-    data = [{"category": item['category__category_name'], "total_amount": item['total_amount']} for item in expenses]
+    breakdown = transactions.values('category__category_name', 'description').annotate(total_amount=Sum('amount')).order_by('-total_amount')
+    data = [{"category": item['category__category_name'], "description": item['description'], "total_amount": item['total_amount']} for item in breakdown]
     return JsonResponse(data, safe=False)
 
 @api_view(['GET'])
@@ -252,9 +271,51 @@ def monthly_credits_by_category(request, year, month):
         date__month=month,
         transaction_type='Credit'
     )
-    credits = transactions.values('category__category_name').annotate(total_amount=Sum('amount')).order_by('-total_amount')
-    data = [{"category": item['category__category_name'], "total_amount": item['total_amount']} for item in credits]
+    breakdown = transactions.values('category__category_name', 'description').annotate(total_amount=Sum('amount')).order_by('-total_amount')
+    data = [{"category": item['category__category_name'], "description": item['description'], "total_amount": item['total_amount']} for item in breakdown]
     return JsonResponse(data, safe=False)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def monthly_overall_overview(request, year, month):
+    total_credits = Transaction.objects.filter(
+        user=request.user,
+        date__year=year,
+        date__month=month,
+        transaction_type='Credit'
+    ).aggregate(total_amount=Sum('amount'))['total_amount'] or 0
+    total_expenses = Transaction.objects.filter(
+        user=request.user,
+        date__year=year,
+        date__month=month,
+        transaction_type='Expense'
+    ).aggregate(total_amount=Sum('amount'))['total_amount'] or 0
+    available_balance = total_credits - total_expenses
+    return JsonResponse({
+        "total_credits": total_credits,
+        "total_expenses": total_expenses,
+        "available_balance": available_balance
+    })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def monthly_categorywise_breakdown(request, year, month):
+    transactions = Transaction.objects.filter(
+        user=request.user,
+        date__year=year,
+        date__month=month
+    )
+    breakdown = transactions.values('category__category_name', 'description', 'transaction_type').annotate(total_amount=Sum('amount')).order_by('-total_amount')
+    data = [{"category": item['category__category_name'], "description": item['description'], "transaction_type": item['transaction_type'], "total_amount": item['total_amount']} for item in breakdown]
+    return JsonResponse(data, safe=False)
+
+
+
+
+
+
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -295,37 +356,3 @@ def monthly_available_balance(request, year, month):
     ).aggregate(total_amount=Sum('amount'))['total_amount'] or 0
     available_balance = total_credits - total_expenses
     return JsonResponse({"available_balance": available_balance})
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def monthly_overall_overview(request, year, month):
-    total_credits = Transaction.objects.filter(
-        user=request.user,
-        date__year=year,
-        date__month=month,
-        transaction_type='Credit'
-    ).aggregate(total_amount=Sum('amount'))['total_amount'] or 0
-    total_expenses = Transaction.objects.filter(
-        user=request.user,
-        date__year=year,
-        date__month=month,
-        transaction_type='Expense'
-    ).aggregate(total_amount=Sum('amount'))['total_amount'] or 0
-    available_balance = total_credits - total_expenses
-    return JsonResponse({
-        "total_credits": total_credits,
-        "total_expenses": total_expenses,
-        "available_balance": available_balance
-    })
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def monthly_categorywise_breakdown(request, year, month):
-    transactions = Transaction.objects.filter(
-        user=request.user,
-        date__year=year,
-        date__month=month
-    )
-    breakdown = transactions.values('category__category_name', 'transaction_type').annotate(total_amount=Sum('amount')).order_by('-total_amount')
-    data = [{"category": item['category__category_name'], "transaction_type": item['transaction_type'], "total_amount": item['total_amount']} for item in breakdown]
-    return JsonResponse(data, safe=False)

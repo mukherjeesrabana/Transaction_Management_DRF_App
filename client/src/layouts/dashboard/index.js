@@ -39,11 +39,18 @@ import axios from "axios";
 import Unauthorized from "layouts/reusablemodals.js/Unauthorized";
 import MonthYearSelector from "layouts/expense_tracker/reports/MonthYearSelector";
 import { useLocation, useNavigate } from "react-router-dom";
+import getCategoryWiseexpenseData from "./data/categorywiseexpensedata";
+import getCategoryWisecreditData from "./data/categorywisecredits";
+import DailyExpenseTrackerChart from "layouts/reports/DailyExpenseTrackerChart";
+import MonthlyCategorywiseBreakdownChart from "layouts/expense_tracker/reports/MonthlyCategorywiseBreakdownChart";
+import { Card } from "antd";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
   const token = sessionStorage.getItem("access_token");
   const [data, setData] = useState({});
+  const [categoryWiseExpenseData, setCategoryWiseExpenseData] = useState({});
+  const [categoryWiseCreditData, setCategoryWiseCreditData] = useState({});
 
   const [unauthorized, setUnauthorized] = useState(false);
 
@@ -82,7 +89,34 @@ function Dashboard() {
 
   useEffect(() => {
     fetchMonthlyOverview();
+    fetchCategoryWiseExpenseData();
+    fetchCategoryWiseCreditData();
   }, [token, year, month]);
+  const fetchCategoryWiseExpenseData = async () => {
+    const data = await getCategoryWiseexpenseData(year, month, token, setUnauthorized);
+
+    if (data && data.status) {
+      if (data.status === 401) {
+        setUnauthorized(true);
+      } else if (data.status === 400) {
+        alert(data.message);
+      }
+    } else {
+      setCategoryWiseExpenseData(data);
+    }
+  };
+  const fetchCategoryWiseCreditData = async () => {
+    const data = await getCategoryWisecreditData(year, month, token, setUnauthorized);
+    if (data && data.status) {
+      if (data.status === 401) {
+        setUnauthorized(true);
+      } else if (data.status === 400) {
+        alert(data.message);
+      }
+    } else {
+      setCategoryWiseCreditData(data);
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -94,10 +128,12 @@ function Dashboard() {
           onLogin={handleLoginRedirect}
         />
       )}
-      <MDBox py={3}>
+      <MDBox py={3} mb={3}>
         <MonthYearSelector onChange={handleMonthYearChange} />
+      </MDBox>
+      <MDBox py={3}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={3}>
+          <Grid item xs={12} md={6} lg={4}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
@@ -107,7 +143,7 @@ function Dashboard() {
               />
             </MDBox>
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          <Grid item xs={12} md={6} lg={4}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="error"
@@ -117,7 +153,7 @@ function Dashboard() {
               />
             </MDBox>
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          <Grid item xs={12} md={6} lg={4}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 icon="store"
@@ -129,40 +165,26 @@ function Dashboard() {
         </Grid>
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
-                  title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
+                  title="monthly expenses"
+                  description="monthly expenditure categorywise"
+                  // date="campaign sent 2 days ago"
+                  chart={categoryWiseExpenseData}
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+
+            <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="completed tasks"
-                  description="Last Campaign Performance"
-                  date="just updated"
-                  chart={tasks}
+                  title="monthly credits"
+                  description="income sources of the month"
+                  // date="updated 4 min ago"
+                  chart={categoryWiseCreditData}
                 />
               </MDBox>
             </Grid>
@@ -171,10 +193,14 @@ function Dashboard() {
         <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={8}>
-              <Projects />
+              <Projects month={month} year={year} />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
-              <OrdersOverview />
+              <MDBox mb={3}>
+                <Card title="Categorywise Breakdown of Expoenses">
+                  <MonthlyCategorywiseBreakdownChart year={year} month={month} />
+                </Card>
+              </MDBox>
             </Grid>
           </Grid>
         </MDBox>

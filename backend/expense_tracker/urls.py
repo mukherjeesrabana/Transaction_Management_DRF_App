@@ -13,11 +13,9 @@ urlpatterns = [
     path('edit-category/<int:category_id>/', views.edit_category, name='edit-category'),
     path('delete-category/<int:category_id>/', views.delete_category, name='delete-category'),
 
+    path('monthly-transactions/<int:year>/<int:month>/', views.monthly_transactions, name='monthly-transactions'),
     path('monthly-expenses-by-category/<int:year>/<int:month>/', views.monthly_expenses_by_category, name='monthly-expenses-by-category'),
     path('monthly-credits-by-category/<int:year>/<int:month>/', views.monthly_credits_by_category, name='monthly-credits-by-category'),
-    path('monthly-total-credits/<int:year>/<int:month>/', views.monthly_total_credits, name='monthly-total-credits'),
-    path('monthly-total-expenses/<int:year>/<int:month>/', views.monthly_total_expenses, name='monthly-total-expenses'),
-    path('monthly-available-balance/<int:year>/<int:month>/', views.monthly_available_balance, name='monthly-available-balance'),
     path('monthly-overall-overview/<int:year>/<int:month>/', views.monthly_overall_overview, name='monthly-overall-overview'),
     path('monthly-categorywise-breakdown/<int:year>/<int:month>/', views.monthly_categorywise_breakdown, name='monthly-categorywise-breakdown'),
     # other paths...

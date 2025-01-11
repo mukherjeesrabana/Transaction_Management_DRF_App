@@ -40,7 +40,7 @@ const DailyExpenseTrackerChart = () => {
 
   return (
     <div>
-      <Chart chartType="ComboChart" width="100%" height="700px" data={data} options={options} />
+      <Chart chartType="ComboChart" width="100%" height="350px" data={data} options={options} />
     </div>
   );
 };
