@@ -4,9 +4,11 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import Unauthorized from "layouts/reusablemodals.js/Unauthorized";
 import { useLocation, useNavigate } from "react-router-dom";
+import MDTypography from "components/MDTypography";
 
 const MonthlyCategorywiseBreakdownChart = ({ year, month }) => {
   const [data, setData] = useState([["Category", "Expense", "Credit"]]);
+  const [noData, setNoData] = useState("");
   const token = sessionStorage.getItem("access_token");
 
   const [unauthorized, setUnauthorized] = useState(false);
@@ -29,15 +31,19 @@ const MonthlyCategorywiseBreakdownChart = ({ year, month }) => {
             },
           }
         );
-        const formattedData = [
-          ["Category", "Credit", "Expense"],
-          ...result.data.map((item) => [
-            `${item.description} [${item.category}]`,
-            item.transaction_type === "Credit" ? parseFloat(item.total_amount) : 0,
-            item.transaction_type === "Expense" ? parseFloat(item.total_amount) : 0,
-          ]),
-        ];
-        setData(formattedData);
+        if (result.data.length > 0) {
+          const formattedData = [
+            ["Category", "Credit", "Expense"],
+            ...result.data.map((item) => [
+              `${item.description} [${item.category}]`,
+              item.transaction_type === "Credit" ? parseFloat(item.total_amount) : 0,
+              item.transaction_type === "Expense" ? parseFloat(item.total_amount) : 0,
+            ]),
+          ];
+          setData(formattedData);
+        } else {
+          setNoData("No transactions found for the month");
+        }
       } catch (error) {
         if (error.status === 401) {
           setUnauthorized(true);
@@ -59,23 +65,27 @@ const MonthlyCategorywiseBreakdownChart = ({ year, month }) => {
         />
       )}
       <h1>Monthly Categorywise Breakdown</h1>
-      <Chart
-        chartType="BarChart"
-        width="100%"
-        height="400px"
-        data={data}
-        options={{
-          title: "Monthly Categorywise Breakdown",
-          chartArea: { width: "50%" },
-          hAxis: {
-            title: "Amount",
-            minValue: 0,
-          },
-          vAxis: {
-            title: "Category",
-          },
-        }}
-      />
+      {noData !== "" ? (
+        <MDTypography>{noData}</MDTypography>
+      ) : (
+        <Chart
+          chartType="BarChart"
+          width="100%"
+          height="400px"
+          data={data}
+          options={{
+            title: "Monthly Categorywise Breakdown",
+            chartArea: { width: "50%" },
+            hAxis: {
+              title: "Amount",
+              minValue: 0,
+            },
+            vAxis: {
+              title: "Category",
+            },
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -38,6 +38,7 @@ function Projects({ month, year }) {
   const { columns, rows, error } = data(month, year);
 
   const [unauthorized, setUnauthorized] = useState(false);
+  const [noData, setNoData] = useState("");
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -52,6 +53,8 @@ function Projects({ month, year }) {
       } else if (error.status === 400) {
         alert(error.message);
       }
+    } else if (rows.length > 0) {
+      setNoData("No Transactions fetched for the month");
     }
   }, [error]);
 
@@ -80,19 +83,23 @@ function Projects({ month, year }) {
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>{rows.length} done</strong> this month
+              &nbsp;<strong>{rows.length} transactions made</strong> this month
             </MDTypography>
           </MDBox>
         </MDBox>
       </MDBox>
       <MDBox>
-        <DataTable
-          table={{ columns, rows }}
-          showTotalEntries={false}
-          isSorted={false}
-          noEndBorder
-          entriesPerPage={false}
-        />
+        {noData !== "" ? (
+          <MDTypography>{noData}</MDTypography>
+        ) : (
+          <DataTable
+            table={{ columns, rows }}
+            showTotalEntries={false}
+            isSorted={false}
+            noEndBorder
+            entriesPerPage={false}
+          />
+        )}
       </MDBox>
     </Card>
   );

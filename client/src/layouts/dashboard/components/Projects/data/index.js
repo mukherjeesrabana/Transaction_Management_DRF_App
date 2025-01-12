@@ -67,7 +67,7 @@ export default function data(month, year) {
   };
   useEffect(() => {
     fetchTransactions();
-  }, []);
+  }, [month, year]);
   const avatars = (members) =>
     members.map(([image, name]) => (
       <Tooltip key={name} title={name} placeholder="bottom">

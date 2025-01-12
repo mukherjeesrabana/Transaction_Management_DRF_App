@@ -4,9 +4,11 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
 import Unauthorized from "layouts/reusablemodals.js/Unauthorized";
+import MDTypography from "components/MDTypography";
 
 const MonthlyExpensesByCategoryChart = ({ year, month }) => {
   const [data, setData] = useState([["Category", "Amount"]]);
+  const [noData, setNoData] = useState("");
   const token = sessionStorage.getItem("access_token");
 
   const [unauthorized, setUnauthorized] = useState(false);
@@ -30,14 +32,18 @@ const MonthlyExpensesByCategoryChart = ({ year, month }) => {
           }
         );
         console.log(result.data);
-        const formattedData = [
-          ["Category", "Amount"],
-          ...result.data.map((item) => [
-            `${item.description} [${item.category}]`,
-            parseFloat(item.total_amount),
-          ]),
-        ];
-        setData(formattedData);
+        if (result.data.length > 0) {
+          const formattedData = [
+            ["Category", "Amount"],
+            ...result.data.map((item) => [
+              `${item.description} [${item.category}]`,
+              parseFloat(item.total_amount),
+            ]),
+          ];
+          setData(formattedData);
+        } else {
+          setNoData("No transactions found for the month");
+        }
       } catch (error) {
         if (error.status === 401) {
           setUnauthorized(true);
@@ -60,15 +66,19 @@ const MonthlyExpensesByCategoryChart = ({ year, month }) => {
         />
       )}
       <h1>Monthly Expenses by Category</h1>
-      <Chart
-        chartType="PieChart"
-        width="100%"
-        height="400px"
-        data={data}
-        options={{
-          title: "Monthly Expenses by Category",
-        }}
-      />
+      {noData !== "" ? (
+        <MDTypography>{noData}</MDTypography>
+      ) : (
+        <Chart
+          chartType="PieChart"
+          width="100%"
+          height="400px"
+          data={data}
+          options={{
+            title: "Monthly Expenses by Category",
+          }}
+        />
+      )}
     </div>
   );
 };

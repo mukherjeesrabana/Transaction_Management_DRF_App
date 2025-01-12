@@ -4,9 +4,11 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import Unauthorized from "layouts/reusablemodals.js/Unauthorized";
 import { useLocation, useNavigate } from "react-router-dom";
+import MDTypography from "components/MDTypography";
 
 const MonthlyCreditsByCategoryChart = ({ year, month }) => {
   const [data, setData] = useState([["Category", "Amount"]]);
+  const [noData, setNoData] = useState("");
   const token = sessionStorage.getItem("access_token");
 
   const [unauthorized, setUnauthorized] = useState(false);
@@ -29,14 +31,18 @@ const MonthlyCreditsByCategoryChart = ({ year, month }) => {
             },
           }
         );
-        const formattedData = [
-          ["Category", "Amount"],
-          ...result.data.map((item) => [
-            `${item.description} [${item.category}]`,
-            parseFloat(item.total_amount),
-          ]),
-        ];
-        setData(formattedData);
+        if (result.data.length > 0) {
+          const formattedData = [
+            ["Category", "Amount"],
+            ...result.data.map((item) => [
+              `${item.description} [${item.category}]`,
+              parseFloat(item.total_amount),
+            ]),
+          ];
+          setData(formattedData);
+        } else {
+          setNoData("No transactions found for the month");
+        }
       } catch (error) {
         if (error.status === 401) {
           setUnauthorized(true);
@@ -58,15 +64,19 @@ const MonthlyCreditsByCategoryChart = ({ year, month }) => {
         />
       )}
       <h1>Monthly Credits by Category</h1>
-      <Chart
-        chartType="PieChart"
-        width="100%"
-        height="400px"
-        data={data}
-        options={{
-          title: "Monthly Credits by Category",
-        }}
-      />
+      {noData !== "" ? (
+        <MDTypography>{noData}</MDTypography>
+      ) : (
+        <Chart
+          chartType="PieChart"
+          width="100%"
+          height="400px"
+          data={data}
+          options={{
+            title: "Monthly Credits by Category",
+          }}
+        />
+      )}
     </div>
   );
 };

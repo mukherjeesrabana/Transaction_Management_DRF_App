@@ -18,7 +18,7 @@ const MonthYearSelector = ({ onChange }) => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
         label="Select month and year"
-        maxDate={currentYear}
+        // maxDate={currentYear}
         openTo="year"
         views={["year", "month"]}
         onChange={handleChange}
