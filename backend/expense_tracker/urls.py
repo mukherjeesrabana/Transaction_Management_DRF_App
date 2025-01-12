@@ -18,5 +18,11 @@ urlpatterns = [
     path('monthly-credits-by-category/<int:year>/<int:month>/', views.monthly_credits_by_category, name='monthly-credits-by-category'),
     path('monthly-overall-overview/<int:year>/<int:month>/', views.monthly_overall_overview, name='monthly-overall-overview'),
     path('monthly-categorywise-breakdown/<int:year>/<int:month>/', views.monthly_categorywise_breakdown, name='monthly-categorywise-breakdown'),
+    
+    path('user-list/', views.userlist, name='user-list'),
+    path('edit-user/<str:email>/', views.editUser, name='edit-user'),
+    path('change-user-status/<str:email>/', views.changeUserStatus, name='change-user-status'),
+
+
     # other paths...
 ]
