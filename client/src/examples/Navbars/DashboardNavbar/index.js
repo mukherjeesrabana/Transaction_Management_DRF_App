@@ -96,6 +96,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleLogout = () => {
     sessionStorage.clear();
     navigate("/authentication/sign-in");
+    window.location.reload();
   };
 
   const firstName = sessionStorage.getItem("firstName");

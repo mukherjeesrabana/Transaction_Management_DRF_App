@@ -42,7 +42,6 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import axios from "axios";
 import MDAlert from "components/MDAlert";
-
 function Basic() {
   const [formData, setFormData] = useState({
     email: "",
@@ -51,37 +50,35 @@ function Basic() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/transactions";
-  // console.log(location.state);
 
-  // Handle form input changes
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     try {
       const response = await axios.post("http://127.0.0.1:8000/expense-tracker/signin/", {
-        username: formData.email, // Assuming email is used as username in your backend
+        username: formData.email,
         password: formData.password,
       });
 
-      // Response contains access and refresh tokens
-      console.log(response.data);
-      sessionStorage.setItem("access_token", response.data.access); // Save access token to session storage
-      sessionStorage.setItem("name", `${response.data.first_name} ${response.data.last_name}`); // Save access token to session storage
-      sessionStorage.setItem("email", response.data.email); // Save access token to session storage
-      alert("Login successful! Tokens are logged to the console.");
-      navigate(from, { replace: true });
+      sessionStorage.setItem("access_token", response.data.access);
+      sessionStorage.setItem("usertype", response.data.user_type);
+
+      const defaultPath = response.data.user_type === "Admin User" ? "/users" : "/transactions";
+      const redirectPath = defaultPath;
+
+      alert("Login successful!");
+      if (sessionStorage.getItem("usertype")) {
+        navigate(redirectPath);
+        window.location.reload();
+      }
     } catch (error) {
-      console.error("Login failed", error);
       if (error.status == 400) {
         alert(error.response.data.error);
       }
@@ -105,23 +102,6 @@ function Basic() {
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
             Sign in
           </MDTypography>
-          <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <FacebookIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <GitHubIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <GoogleIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-          </Grid>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <form onSubmit={handleSubmit}>
@@ -153,21 +133,6 @@ function Basic() {
               <MDButton type="submit" variant="gradient" color="info" fullWidth>
                 Sign In
               </MDButton>
-            </MDBox>
-            <MDBox mt={3} mb={1} textAlign="center">
-              <MDTypography variant="button" color="text">
-                Dont have an account?{" "}
-                <MDTypography
-                  component={Link}
-                  to="/authentication/sign-up"
-                  variant="button"
-                  color="info"
-                  fontWeight="medium"
-                  textGradient
-                >
-                  Sign Up
-                </MDTypography>
-              </MDTypography>
             </MDBox>
           </form>
         </MDBox>

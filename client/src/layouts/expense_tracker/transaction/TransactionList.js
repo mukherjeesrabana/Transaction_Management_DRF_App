@@ -37,7 +37,8 @@ const TransactionList = ({ transactions, fetchTransactions, categories }) => {
     } catch (error) {
       message.error("Failed to delete transaction");
       if (error.status === 401) {
-        setUnauthorized(true);
+        navigate("/authentication/sign-in");
+        window.location.reload();
       } else if (error.status == 400) {
         alert(error.response.data.error);
       }
@@ -69,13 +70,6 @@ const TransactionList = ({ transactions, fetchTransactions, categories }) => {
 
   return (
     <div>
-      {unauthorized && (
-        <Unauthorized
-          openstate={unauthorized}
-          content="Please login to continue"
-          onLogin={handleLoginRedirect}
-        />
-      )}
       <Table dataSource={transactions} columns={columns} rowKey="id" />
       {editingTransaction && (
         <EditTransaction

@@ -82,7 +82,8 @@ function Dashboard() {
       })
       .catch((e) => {
         if (e.response && e.response.status === 401) {
-          setUnauthorized(true);
+          navigate("/authentication/sign-in");
+          window.location.reload();
         }
       });
   };
@@ -97,7 +98,8 @@ function Dashboard() {
 
     if (data && data.status) {
       if (data.status === 401) {
-        setUnauthorized(true);
+        navigate("/authentication/sign-in");
+        window.location.reload();
       } else if (data.status === 400) {
         alert(data.message);
       }
@@ -109,7 +111,8 @@ function Dashboard() {
     const data = await getCategoryWisecreditData(year, month, token, setUnauthorized);
     if (data && data.status) {
       if (data.status === 401) {
-        setUnauthorized(true);
+        navigate("/authentication/sign-in");
+        window.location.reload();
       } else if (data.status === 400) {
         alert(data.message);
       }
@@ -121,13 +124,7 @@ function Dashboard() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      {unauthorized && (
-        <Unauthorized
-          openstate={unauthorized}
-          content="Please login to continue"
-          onLogin={handleLoginRedirect}
-        />
-      )}
+
       <MDBox py={3} mb={3}>
         <MonthYearSelector onChange={handleMonthYearChange} />
       </MDBox>

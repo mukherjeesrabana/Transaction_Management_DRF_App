@@ -20,6 +20,7 @@ urlpatterns = [
     path('monthly-categorywise-breakdown/<int:year>/<int:month>/', views.monthly_categorywise_breakdown, name='monthly-categorywise-breakdown'),
     
     path('user-list/', views.userlist, name='user-list'),
+    path('upload-users/', views.upload_users, name='upload-users'),
     path('edit-user/<str:email>/', views.editUser, name='edit-user'),
     path('change-user-status/<str:email>/', views.changeUserStatus, name='change-user-status'),
 

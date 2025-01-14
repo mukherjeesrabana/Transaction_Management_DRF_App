@@ -40,7 +40,8 @@ export default function Category() {
       console.log(error);
       message.error("Failed to add category");
       if (error.status === 401) {
-        setUnauthorized(true);
+        navigate("/authentication/sign-in");
+        window.location.reload();
       } else if (error.status == 400) {
         alert(error.response.data.error);
       }
@@ -61,7 +62,8 @@ export default function Category() {
       setCategories(result.data);
     } catch (error) {
       if (error.status === 401) {
-        setUnauthorized(true);
+        navigate("/authentication/sign-in");
+        window.location.reload();
       } else if (error.status == 400) {
         alert(error.response.data.error);
       }
@@ -71,13 +73,6 @@ export default function Category() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      {unauthorized && (
-        <Unauthorized
-          openstate={unauthorized}
-          content="Please login to continue"
-          onLogin={handleLoginRedirect}
-        />
-      )}
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>

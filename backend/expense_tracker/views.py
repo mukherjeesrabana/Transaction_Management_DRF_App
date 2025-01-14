@@ -346,16 +346,17 @@ def userlist(request):
         first_name= data.get('first_name')
         last_name= data.get('last_name')
         email= data.get('email')
+        password= data.get('password')
         username= data.get('email')
        
 
         if not first_name or not last_name or not email:
             return JsonResponse({'error':'All fields are not provided'}, status=400)
         if User.objects.filter(username=username).exists():
-            return JsonResponse({'error': 'Username already exists.'}, status=status.HTTP_400_BAD_REQUEST)
-        user= User.objects.create_user(username= username, first_name= first_name, last_name= last_name, email=email)
+            return JsonResponse({'error': f"User with email id {email} already exists."}, status=status.HTTP_400_BAD_REQUEST)
+        user= User.objects.create_user(username= username, first_name= first_name, last_name= last_name, email=email, password=password)
 
-        SystemUser.objects.create(user=user, user_type= 'Standard User')
+        SystemUser.objects.create(user=user, user_type= 'Standard User', status='Active')
 
         return JsonResponse({'message': 'User created successfully.'}, status=status.HTTP_201_CREATED)
     
@@ -402,6 +403,30 @@ def changeUserStatus(request, email):
     system_user.status=data.get("status", system_user.status)
     system_user.save()
     return JsonResponse({'message':"User deactivated"}, status=200)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdmin])
+def upload_users(request):
+    file = request.FILES['file']
+    
+    df = pd.read_excel(file)
+
+    if not file:
+        return JsonResponse({'error': 'No file uploaded.'}, status=400)
+
+    for _, row in df.iterrows():
+        email=row['email']
+        if User.objects.filter(username=email).exists():
+            return JsonResponse({'error': f"User with email id {email} already exists."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user= User.objects.create_user(username= row['email'], first_name= row['first_name'], last_name= row['last_name'], email=row['email'], password=row['password'])
+
+        SystemUser.objects.create(user=user, user_type= 'Standard User', status='Active')
+        
+       
+    return JsonResponse({'message': 'Users uploaded successfully'}, status=status.HTTP_201_CREATED)
+
 
 
 

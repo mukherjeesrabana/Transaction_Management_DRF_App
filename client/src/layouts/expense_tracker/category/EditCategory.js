@@ -44,7 +44,8 @@ const EditCategory = ({ visible, onClose, category, fetchCategories }) => {
     } catch (error) {
       message.error("Failed to update category");
       if (error.status === 401) {
-        setUnauthorized(true);
+        navigate("/authentication/sign-in");
+        window.location.reload();
       } else if (error.status == 400) {
         alert(error.response.data.error);
       }
@@ -53,13 +54,6 @@ const EditCategory = ({ visible, onClose, category, fetchCategories }) => {
 
   return (
     <Modal title="Edit Category" visible={visible} onOk={handleOk} onCancel={onClose}>
-      {unauthorized && (
-        <Unauthorized
-          openstate={unauthorized}
-          content="Please login to continue"
-          onLogin={handleLoginRedirect}
-        />
-      )}
       <Form form={form} layout="vertical">
         <Form.Item name="category_name" label="Category Name" rules={[{ required: true }]}>
           <Input />

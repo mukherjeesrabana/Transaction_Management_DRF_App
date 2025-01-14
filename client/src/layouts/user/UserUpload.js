@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function UploadTransaction({ fetchTrasnsactions }) {
+export default function UserUpload({ fetchUsers }) {
   const token = sessionStorage.getItem("access_token");
   const fileInputRef = useRef(null);
   const [file, setFile] = useState(null);
@@ -15,10 +15,6 @@ export default function UploadTransaction({ fetchTrasnsactions }) {
 
   const location = useLocation();
   const navigate = useNavigate();
-
-  const handleLoginRedirect = () => {
-    navigate("/authentication/sign-in", { state: { from: location } });
-  };
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -41,7 +37,7 @@ export default function UploadTransaction({ fetchTrasnsactions }) {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/expense-tracker/upload-transactions/",
+        "http://127.0.0.1:8000/expense-tracker/upload-users/",
         formData,
         {
           headers: {
@@ -51,7 +47,7 @@ export default function UploadTransaction({ fetchTrasnsactions }) {
         }
       );
       alert(response.data.message);
-      fetchTrasnsactions();
+      fetchUsers();
     } catch (error) {
       console.error("Error uploading file:", error);
       alert("Error uploading file.");
@@ -70,6 +66,6 @@ export default function UploadTransaction({ fetchTrasnsactions }) {
     </>
   );
 }
-UploadTransaction.propTypes = {
-  fetchTrasnsactions: PropTypes.func,
+UserUpload.propTypes = {
+  fetchUsers: PropTypes.func,
 };

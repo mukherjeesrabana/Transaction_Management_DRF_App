@@ -54,7 +54,8 @@ const EditTransaction = ({ visible, onClose, transaction, categories, fetchTrans
     } catch (error) {
       message.error("Failed to update transaction");
       if (error.status === 401) {
-        setUnauthorized(true);
+        navigate("/authentication/sign-in");
+        window.location.reload();
       } else if (error.status == 400) {
         alert(error.response.data.error);
       }
@@ -63,13 +64,6 @@ const EditTransaction = ({ visible, onClose, transaction, categories, fetchTrans
 
   return (
     <Modal title="Edit Transaction" visible={visible} onOk={handleOk} onCancel={onClose}>
-      {unauthorized && (
-        <Unauthorized
-          openstate={unauthorized}
-          content="Please login to continue"
-          onLogin={handleLoginRedirect}
-        />
-      )}
       <Form form={form} layout="vertical">
         <Form.Item name="date" label="Date" rules={[{ required: true }]}>
           <DatePicker format="YYYY-MM-DD" />

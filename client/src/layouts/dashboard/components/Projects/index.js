@@ -49,7 +49,8 @@ function Projects({ month, year }) {
   useEffect(() => {
     if (error && error.status) {
       if (error.status === 401) {
-        setUnauthorized(true);
+        navigate("/authentication/sign-in");
+        window.location.reload();
       } else if (error.status === 400) {
         alert(error.message);
       }
@@ -60,13 +61,6 @@ function Projects({ month, year }) {
 
   return (
     <Card>
-      {unauthorized && (
-        <Unauthorized
-          openstate={unauthorized}
-          content="Please login to continue"
-          onLogin={handleLoginRedirect}
-        />
-      )}
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>

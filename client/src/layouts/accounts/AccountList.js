@@ -69,13 +69,6 @@ export default function AccountList() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      {unauthorized && (
-        <Unauthorized
-          openstate={unauthorized}
-          content="Please login to continue"
-          onLogin={handleLoginRedirect}
-        />
-      )}
 
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>

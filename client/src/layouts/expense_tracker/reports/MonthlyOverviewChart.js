@@ -38,7 +38,8 @@ const MonthlyOverviewChart = ({ year, month }) => {
         setData(formattedData);
       } catch (error) {
         if (error.status === 401) {
-          setUnauthorized(true);
+          navigate("/authentication/sign-in");
+          window.location.reload();
         } else if (error.status == 400) {
           alert(error.response.data.error);
         }
@@ -49,13 +50,6 @@ const MonthlyOverviewChart = ({ year, month }) => {
 
   return (
     <div>
-      {unauthorized && (
-        <Unauthorized
-          openstate={unauthorized}
-          content="Please login to continue"
-          onLogin={handleLoginRedirect}
-        />
-      )}
       <h1>Monthly Overview</h1>
       <Chart
         chartType="BarChart"
