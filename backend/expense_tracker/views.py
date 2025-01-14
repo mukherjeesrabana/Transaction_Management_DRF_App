@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import SystemUser, Category, Transaction
+from .models import SystemUser, Category, Transaction, SubCategory
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
@@ -61,8 +61,86 @@ def signin(request):
         'status': system_user.status
     })
 
+
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsStandardUser])
+def subcategory_list(request):
+    if request.method=='GET':
+        subCategories= SubCategory.objects.all()
+        data=[
+            {
+                "id":subCategory.id,
+                "category":subCategory.category.category_name,
+                "subcategory_name":subCategory.subcategory_name
+            } for subCategory in subCategories
+        ]
+        return JsonResponse(data, safe=False)
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        category_id = data.get('category')
+        subcategory_name = data.get('subcategory_name')
+        
+        if not category_id or not subcategory_name:
+            return JsonResponse({'error': 'All fields are required'}, status=400)
+        
+        try:
+            category = Category.objects.get(id=category_id)
+        except Category.DoesNotExist:
+            return JsonResponse({'error': 'Category not found'}, status=404)
+        
+        subCategory = SubCategory.objects.create(category=category, subcategory_name=subcategory_name)
+        return JsonResponse({"id": subCategory.id, "category": subCategory.category.category_name, "subcategory_name": subCategory.subcategory_name}, status=201)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated, IsStandardUser])
+def edit_subcategory(request, id):
+
+    try:
+        subcategory= SubCategory.objects.get(id= id)
+    except SubCategory.DoesNotExist:
+        return JsonResponse({'error':'No subcategory with this is found'}, status=400)
+    data= json.loads(request.body)
+    category_id= data['category']
+    subcategory_name= data['subcategory_name']
+    if not category_id or not subcategory_name:
+        return JsonResponse({'message':"All fields are required"}, status=400)
+    subcategory.category_id= data.get('category', subcategory.category_id)
+    subcategory.subcategory_name= data.get('subcategory_name', subcategory.subcategory_name)
+    subcategory.save()
+    return JsonResponse({
+        "id":subcategory.id,
+        "category":subcategory.category.category_name,
+        "subcategory_name":subcategory.subcategory_name
+        }, status=201)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsStandardUser])
+def upload_subcats(request):
+    file = request.FILES['file']
+    
+    df = pd.read_excel(file)
+
+    if not file:
+        return JsonResponse({'error': 'No file uploaded.'}, status=400)
+
+    for _, row in df.iterrows():
+        category_name = row['category']
+        category, created = Category.objects.get_or_create(category_name=category_name)
+
+        SubCategory.objects.create( 
+
+            category=category,
+            subcategory_name=row['subcategory_name'],
+        )
+
+       
+    return JsonResponse({'message': 'Sub Categories uploaded successfully'}, status=status.HTTP_201_CREATED)
+
+
+
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated, IsStandardUser])
 def category_list(request):
     if request.method == 'GET':
         categories = Category.objects.all()
@@ -79,7 +157,7 @@ def category_list(request):
 
 
 @api_view(['PUT'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsStandardUser])
 def edit_category(request, category_id):
     try:
         category = Category.objects.get(id=category_id)
@@ -96,8 +174,26 @@ def edit_category(request, category_id):
         "category_name": category.category_name
     }, status=status.HTTP_200_OK)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsStandardUser])
+def upload_categories(request):
+    file = request.FILES['file']
+   
+    df = pd.read_excel(file)
+
+    if not file:
+        return JsonResponse({'error': 'No file uploaded.'}, status=400)
+
+    for _, row in df.iterrows():
+        Category.objects.create(
+            category_name=row['category_name']
+        )
+
+    return JsonResponse({'message': 'Categories uploaded successfully'}, status=status.HTTP_201_CREATED)
+
+
 @api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsStandardUser])
 def delete_category(request, category_id):
     try:
         category = Category.objects.get(id=category_id)
@@ -119,6 +215,7 @@ def transaction_list(request):
                 "transaction_type": transaction.transaction_type,
                 "amount": transaction.amount,
                 "category": transaction.category.category_name,
+                "subcategory":transaction.subcategory.subcategory_name,
                 "description": transaction.description,
                 "transaction_user": transaction.transaction_user.user.username
             }
@@ -131,14 +228,17 @@ def transaction_list(request):
         transaction_type = data.get('transaction_type')
         amount = data.get('amount')
         category_id = data.get('category')
+        subcategory_id = data.get('subcategory')
         description = data.get('description')
         category = Category.objects.get(id=category_id)
+        subcategory = SubCategory.objects.get(id=subcategory_id)
         system_user = SystemUser.objects.get(user=request.user)
         transaction = Transaction.objects.create(
             date=date,
             transaction_type=transaction_type,
             amount=amount,
             category=category,
+            subcategory=subcategory,
             description=description,
             transaction_user=system_user
         )
@@ -148,6 +248,7 @@ def transaction_list(request):
             "transaction_type": transaction.transaction_type,
             "amount": transaction.amount,
             "category": transaction.category.category_name,
+            "subcategory": transaction.subcategory.subcategory_name,
             "description": transaction.description,
             "transaction_user": transaction.transaction_user.user.username
         }, status=status.HTTP_201_CREATED)
@@ -165,6 +266,7 @@ def edit_transaction(request, transaction_id):
     transaction.transaction_type = data.get('transaction_type', transaction.transaction_type)
     transaction.amount = data.get('amount', transaction.amount)
     transaction.category_id = data.get('category', transaction.category_id)
+    transaction.subcategory_id = data.get('subcategory', transaction.subcategory_id)
     transaction.description = data.get('description', transaction.description)
     transaction.save()
 
@@ -174,6 +276,7 @@ def edit_transaction(request, transaction_id):
         "transaction_type": transaction.transaction_type,
         "amount": transaction.amount,
         "category": transaction.category.category_name,
+        "subcategory": transaction.subcategory.subcategory_name,
         "description": transaction.description,
         "transaction_user": transaction.transaction_user.user.username
     }, status=status.HTTP_200_OK)
@@ -195,44 +298,41 @@ def delete_transaction(request, transaction_id):
 def upload_transactions(request):
     file = request.FILES['file']
     
-    df = pd.read_excel(file)
-
     if not file:
         return JsonResponse({'error': 'No file uploaded.'}, status=400)
+    
+    df = pd.read_excel(file)
 
     for _, row in df.iterrows():
         category_name = row['category']
         category, created = Category.objects.get_or_create(category_name=category_name)
 
+        subcategory_name = row['subcategory']
+        subcategory, created = SubCategory.objects.get_or_create(
+            subcategory_name=subcategory_name,
+            defaults={'category': category}
+        )
+        # If the subcategory already exists but with a different category, update it
+        if not created and subcategory.category != category:
+            subcategory.category = category
+            subcategory.save()
+
         if row['transaction_type'] not in ['Expense', 'Credit']:
             return JsonResponse({'error': 'Invalid transaction type'}, status=status.HTTP_400_BAD_REQUEST)
+        
         system_user = SystemUser.objects.get(user=request.user)
         Transaction.objects.create(
             date=row['date'],
             transaction_type=row['transaction_type'],
             amount=row['amount'],
             category=category,
+            subcategory=subcategory,
             description=row['description'],
             transaction_user=system_user
         )
+    
     return JsonResponse({'message': 'Transactions uploaded successfully'}, status=status.HTTP_201_CREATED)
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def upload_categories(request):
-    file = request.FILES['file']
-   
-    df = pd.read_excel(file)
-
-    if not file:
-        return JsonResponse({'error': 'No file uploaded.'}, status=400)
-
-    for _, row in df.iterrows():
-        Category.objects.create(
-            category_name=row['category_name']
-        )
-
-    return JsonResponse({'message': 'Categories uploaded successfully'}, status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsStandardUser])

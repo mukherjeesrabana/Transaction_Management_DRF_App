@@ -4,6 +4,11 @@ from . import views
 urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('signin/', views.signin, name='signin'),
+
+    path('subcategory-list/', views.subcategory_list, name='subcategory-list'),
+    path('edit-subcategory/<int:id>/', views.edit_subcategory, name='edit-subcategory'),
+    path('upload-subcats/', views.upload_subcats, name='upload-subcats'),
+
     path('category-list/', views.category_list, name='category-list'),
     path('transaction-list/', views.transaction_list, name='transaction-list'),
     path('upload-transactions/', views.upload_transactions, name='upload-transactions'),
