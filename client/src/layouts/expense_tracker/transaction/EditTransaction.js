@@ -9,7 +9,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
-const EditTransaction = ({ visible, onClose, transaction, categories, fetchTransactions }) => {
+const EditTransaction = ({
+  visible,
+  onClose,
+  transaction,
+  categories,
+  subCategories,
+  fetchTransactions,
+}) => {
   const token = sessionStorage.getItem("access_token");
 
   const [form] = Form.useForm();
@@ -28,7 +35,8 @@ const EditTransaction = ({ visible, onClose, transaction, categories, fetchTrans
       form.setFieldsValue({
         ...transaction,
         date: dayjs(transaction.date),
-        category: transaction.category,
+        category: transaction.category_id,
+        subcategory: transaction.subcategory_id,
       });
     }
   }, [transaction, form]);
@@ -55,6 +63,7 @@ const EditTransaction = ({ visible, onClose, transaction, categories, fetchTrans
       message.error("Failed to update transaction");
       if (error.status === 401) {
         navigate("/authentication/sign-in");
+        sessionStorage.clear();
         window.location.reload();
       } else if (error.status == 400) {
         alert(error.response.data.error);
@@ -86,6 +95,15 @@ const EditTransaction = ({ visible, onClose, transaction, categories, fetchTrans
             ))}
           </Select>
         </Form.Item>
+        <Form.Item name="subcategory" label="Sub Category" rules={[{ required: true }]}>
+          <Select>
+            {subCategories.map((category) => (
+              <Option key={category.id} value={category.id}>
+                {category.subcategory_name}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
         <Form.Item name="description" label="Description" rules={[{ required: true }]}>
           <Input.TextArea />
         </Form.Item>
@@ -99,6 +117,7 @@ EditTransaction.propTypes = {
   onClose: PropTypes.func.isRequired,
   transaction: PropTypes.object,
   categories: PropTypes.array.isRequired,
+  subCategories: PropTypes.array.isRequired,
   fetchTransactions: PropTypes.func.isRequired,
 };
 

@@ -10,6 +10,7 @@ import Reports from "layouts/expense_tracker/reports/Reports";
 import Icon from "@mui/material/Icon";
 import User from "layouts/user/User";
 import AdminDashboard from "layouts/admindashboard/AdminDashboard";
+import SubCategory from "layouts/expense_tracker/subcategory/SubCategory";
 
 const routes = [
   {
@@ -30,6 +31,7 @@ const routes = [
     component: <Transaction />,
     roles: ["Standard User"], // Accessible only to admin
   },
+
   {
     type: "collapse",
     name: "Add Categories",
@@ -37,6 +39,15 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/categories",
     component: <Category />,
+    roles: ["Standard User"], // Accessible only to admin
+  },
+  {
+    type: "collapse",
+    name: "Add Sub-Categories",
+    key: "subcategories",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/subcategories",
+    component: <SubCategory />,
     roles: ["Standard User"], // Accessible only to admin
   },
   {

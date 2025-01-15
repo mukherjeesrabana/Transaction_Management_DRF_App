@@ -50,6 +50,7 @@ const EditUser = ({ visible, onClose, user, fetchUsers }) => {
       message.error("Failed to update user");
       if (error.status === 401) {
         navigate("/authentication/sign-in");
+        sessionStorage.clear();
         window.location.reload();
       } else if (error.status == 400) {
         alert(error.response.data.error);

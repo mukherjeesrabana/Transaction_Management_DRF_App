@@ -71,6 +71,7 @@ def subcategory_list(request):
             {
                 "id":subCategory.id,
                 "category":subCategory.category.category_name,
+                "category_id":subCategory.category.id,
                 "subcategory_name":subCategory.subcategory_name
             } for subCategory in subCategories
         ]
@@ -110,6 +111,7 @@ def edit_subcategory(request, id):
     return JsonResponse({
         "id":subcategory.id,
         "category":subcategory.category.category_name,
+        "category_id":subcategory.category.id,
         "subcategory_name":subcategory.subcategory_name
         }, status=201)
 @api_view(['POST'])
@@ -215,7 +217,9 @@ def transaction_list(request):
                 "transaction_type": transaction.transaction_type,
                 "amount": transaction.amount,
                 "category": transaction.category.category_name,
+                "category_id": transaction.category.id,
                 "subcategory":transaction.subcategory.subcategory_name,
+                "subcategory_id":transaction.subcategory.id,
                 "description": transaction.description,
                 "transaction_user": transaction.transaction_user.user.username
             }

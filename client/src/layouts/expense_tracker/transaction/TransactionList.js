@@ -7,7 +7,7 @@ import EditTransaction from "./EditTransaction";
 import { useLocation, useNavigate } from "react-router-dom";
 import Unauthorized from "layouts/reusablemodals.js/Unauthorized";
 
-const TransactionList = ({ transactions, fetchTransactions, categories }) => {
+const TransactionList = ({ transactions, fetchTransactions, categories, subCategories }) => {
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const token = sessionStorage.getItem("access_token");
@@ -38,6 +38,7 @@ const TransactionList = ({ transactions, fetchTransactions, categories }) => {
       message.error("Failed to delete transaction");
       if (error.status === 401) {
         navigate("/authentication/sign-in");
+        sessionStorage.clear();
         window.location.reload();
       } else if (error.status == 400) {
         alert(error.response.data.error);
@@ -50,6 +51,7 @@ const TransactionList = ({ transactions, fetchTransactions, categories }) => {
     { title: "Transaction Type", dataIndex: "transaction_type", key: "transaction_type" },
     { title: "Amount", dataIndex: "amount", key: "amount" },
     { title: "Category", dataIndex: "category", key: "category" },
+    { title: "Sub Category", dataIndex: "subcategory", key: "subcategory" },
     { title: "Description", dataIndex: "description", key: "description" },
     {
       title: "Action",
@@ -77,6 +79,7 @@ const TransactionList = ({ transactions, fetchTransactions, categories }) => {
           onClose={() => setEditModalVisible(false)}
           transaction={editingTransaction}
           categories={categories}
+          subCategories={subCategories}
           fetchTransactions={fetchTransactions}
         />
       )}
@@ -88,6 +91,7 @@ TransactionList.propTypes = {
   transactions: PropTypes.array.isRequired,
   fetchTransactions: PropTypes.func.isRequired,
   categories: PropTypes.array.isRequired,
+  subCategories: PropTypes.array.isRequired,
 };
 
 export default TransactionList;

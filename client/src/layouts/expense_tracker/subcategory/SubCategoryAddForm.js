@@ -6,13 +6,12 @@ import PropTypes from "prop-types";
 
 const { Option } = Select;
 
-const TransactionAddForm = ({ categories, subCategories, submitTransaction }) => {
-  console.log(subCategories);
+const SubCategoryAddForm = ({ categories, submitSubCategory }) => {
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
     console.log(values);
-    submitTransaction(values);
+    submitSubCategory(values);
   };
 
   const transactionTypes = [
@@ -22,12 +21,6 @@ const TransactionAddForm = ({ categories, subCategories, submitTransaction }) =>
 
   return (
     <Form form={form} onFinish={onFinish}>
-      <Form.Item name="date" label="Date" labelCol={{ span: 6 }} rules={[{ required: true }]}>
-        <DatePicker format="YYYY-MM-DD" />
-      </Form.Item>
-      <Form.Item name="amount" label="Amount" labelCol={{ span: 6 }} rules={[{ required: true }]}>
-        <Input type="number" />
-      </Form.Item>
       <Form.Item
         name="category"
         label="Category"
@@ -43,40 +36,12 @@ const TransactionAddForm = ({ categories, subCategories, submitTransaction }) =>
         </Select>
       </Form.Item>
       <Form.Item
-        name="subcategory"
-        label="Sub Category"
+        name="subcategory_name"
+        label="Name"
         labelCol={{ span: 6 }}
         rules={[{ required: true }]}
       >
-        <Select>
-          {subCategories.map((category) => (
-            <Option key={category.id} value={category.id}>
-              {category.subcategory_name}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item>
-      <Form.Item
-        name="transaction_type"
-        label="Transaction Type"
-        labelCol={{ span: 6 }}
-        rules={[{ required: true }]}
-      >
-        <Select>
-          {transactionTypes.map((t) => (
-            <Option key={t.id} value={t.id}>
-              {t.name}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item>
-      <Form.Item
-        name="description"
-        label="Description"
-        labelCol={{ span: 6 }}
-        rules={[{ required: true }]}
-      >
-        <Input.TextArea />
+        <Input />
       </Form.Item>
 
       <div
@@ -89,7 +54,7 @@ const TransactionAddForm = ({ categories, subCategories, submitTransaction }) =>
       >
         <Form.Item>
           <Button type="primary" htmlType="submit" style={{ marginRight: "3%" }}>
-            Add Transaction
+            Add SubCategory
           </Button>
         </Form.Item>
         <Form.Item>
@@ -108,10 +73,9 @@ const TransactionAddForm = ({ categories, subCategories, submitTransaction }) =>
     </Form>
   );
 };
-TransactionAddForm.propTypes = {
+SubCategoryAddForm.propTypes = {
   categories: PropTypes.array,
-  subCategories: PropTypes.array,
-  submitTransaction: PropTypes.func,
+  submitSubCategory: PropTypes.func,
 };
 
-export default TransactionAddForm;
+export default SubCategoryAddForm;
