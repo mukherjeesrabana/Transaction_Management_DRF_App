@@ -78,8 +78,8 @@ There are two types of roles in the application:
 **User Behavior:** Admins can click on an edit button next to a user to modify their details. Upon submission, the changes are saved.
 
 ### Project Structure
-**backend:** Contains the Django backend code.
-**client:** Contains the React frontend code.
+**-backend:** Contains the Django backend code.
+**-client:** Contains the React frontend code.
 
 ## Installation Steps
 
