@@ -23,17 +23,17 @@ There are two types of roles in the application:
 
 **- Transaction Management**
 
--Add Transactions:- Users can add new transactions by providing details such as date, amount, category, subcategory, and description.
--User Behavior:- Users fill out a form to add a new transaction. Upon submission, the transaction is added to their list of transactions.
+- Add Transactions:- Users can add new transactions by providing details such as date, amount, category, subcategory, and description.
+- User Behavior:- Users fill out a form to add a new transaction. Upon submission, the transaction is added to their list of transactions.
 
--Bulk Upload Transactions:- Users can upload a .xls file containing transaction details to add multiple transactions at once.
--User Behavior:- Users can navigate to the bulk upload page and upload a .xls file with transaction details. The system processes the file and adds the transactions to the database. Users receive feedback on the success or failure of the upload.
+- Bulk Upload Transactions:- Users can upload a .xls file containing transaction details to add multiple transactions at once.
+- User Behavior:- Users can navigate to the bulk upload page and upload a .xls file with transaction details. The system processes the file and adds the transactions to the database. Users receive feedback on the success or failure of the upload.
 
--View Transactions:- Users can view a list of their transactions.
--User Behavior:- Users can see a table or list of all their transactions, with details such as date, amount, category, subcategory, and description.
+- View Transactions:- Users can view a list of their transactions.
+- User Behavior:- Users can see a table or list of all their transactions, with details such as date, amount, category, subcategory, and description.
 
--Edit Transactions:- Users can edit existing transactions.
--User Behavior:- Users can click on an edit button next to a transaction to modify its details. Upon submission, the changes are saved.
+- Edit Transactions:- Users can edit existing transactions.
+- User Behavior:- Users can click on an edit button next to a transaction to modify its details. Upon submission, the changes are saved.
 
 **- Category and Subcategory Management**
 
@@ -101,9 +101,9 @@ python -m venv venv
 ```
 **- Activate the Virtual Environment:**
 
-**- On Windows:**
+- **On Windows:**
 `venv\Scripts\activate`
-**- On macOS/Linux:**
+- **On macOS/Linux:**
 `source venv/bin/activate`
 **- Install Requirements:**
 `pip install -r requirements.txt`
@@ -116,7 +116,7 @@ python -m venv venv
 **- Run the Backend Server:**
 `python manage.py runserver`
 
-## The backend server will be available at http://127.0.0.1:8000/admin. Use the superuser credentials to log in.
+ The backend server will be available at http://127.0.0.1:8000/admin. Use the superuser credentials to log in.
 
 ### Frontend Setup
 **- Install Node.js and npm:** 
