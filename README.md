@@ -110,15 +110,25 @@ venv\Scripts\activate
 source venv/bin/activate
 ```
 **- Install Requirements:**
-`pip install -r requirements.txt`
+```
+pip install -r requirements.txt
+```
 **- Make Migrations:**
-`python manage.py makemigrations`
+```
+python manage.py makemigrations
+```
 - **Apply Migrations:**
-`python manage.py migrate`
+```
+python manage.py migrate
+```
 - **Create Superuser:**
-`python manage.py createsuperuser`
+```
+python manage.py createsuperuser
+```
 - **Run the Backend Server:**
-`python manage.py runserver`
+```
+python manage.py runserver
+```
 
  The backend server will be available at http://127.0.0.1:8000/admin. Use the superuser credentials to log in.
 
@@ -128,14 +138,18 @@ Ensure Node.js and npm are installed on your system. You can download them from 
 
 **- Install React:**
 If React is not installed on your local system, you can install it using npm:
-`npm install -g create-react-app`
+```
+npm install -g create-react-app
+```
 **- Install Frontend Dependencies:**
 ```
 cd client
 npm install
 ```
 **- Run the Frontend Server:**
-`npm start`
+```
+npm start
+```
 The frontend server will be available at http://localhost:3000.
 
 
