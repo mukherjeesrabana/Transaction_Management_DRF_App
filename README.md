@@ -117,15 +117,15 @@ pip install -r requirements.txt
 ```
 python manage.py makemigrations
 ```
-- **Apply Migrations:**
+**- Apply Migrations:**
 ```
 python manage.py migrate
 ```
-- **Create Superuser:**
+**- Create Superuser:**
 ```
 python manage.py createsuperuser
 ```
-- **Run the Backend Server:**
+**- Run the Backend Server:**
 ```
 python manage.py runserver
 ```
