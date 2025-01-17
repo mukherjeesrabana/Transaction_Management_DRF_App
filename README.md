@@ -56,26 +56,26 @@ There are two types of roles in the application:
 - User Behavior: Users can see a table or list of all subcategories they have created.
 
 **- Monthly Reports and Charts**
--Monthly Expense and Credit Summary:- Users can view a summary of their monthly expenses and credits.
--User Behavior:- Users can see a bar chart or line chart showing the total expenses and credits for each month.
+- Monthly Expense and Credit Summary:- Users can view a summary of their monthly expenses and credits.
+- User Behavior:- Users can see a bar chart or line chart showing the total expenses and credits for each month.
 
--Category-wise Breakdown:- Users can view a breakdown of their expenses and credits by category.
--User Behavior:- Users can see a bar chart or pie chart showing the distribution of expenses and credits by category.
+- Category-wise Breakdown:- Users can view a breakdown of their expenses and credits by category.
+- User Behavior:- Users can see a bar chart or pie chart showing the distribution of expenses and credits by category.
 
 ## Admin User Features:
 
 **- Admin Dashboard for User Management**:
--User List:- Admins can view a list of all users, including their details such as username, email, role, and status.
--User Behavior:- Admins can see a table or list of all users in the system. They can view details such as first name, last name, email, username, user type, and status.
+- User List:- Admins can view a list of all users, including their details such as username, email, role, and status.
+- User Behavior:- Admins can see a table or list of all users in the system. They can view details such as first name, last name, email, username, user type, and status.
 
--Add User:- Admins can add new users to the system.
--User Behavior:- Admins fill out a form to add a new user. Upon submission, the user is added to the system and appears in the user list.
+- Add User:- Admins can add new users to the system.
+- User Behavior:- Admins fill out a form to add a new user. Upon submission, the user is added to the system and appears in the user list.
 
--Bulk Upload Users:- Admins can upload a .xls file containing user details to add multiple users at once.
--User Behavior:- Admins can navigate to the bulk upload page and upload a .xls file with user details. The system processes the file and adds the users to the database. Admins receive feedback on the success or failure of the uplo
+- Bulk Upload Users:- Admins can upload a .xls file containing user details to add multiple users at once.
+- User Behavior:- Admins can navigate to the bulk upload page and upload a .xls file with user details. The system processes the file and adds the users to the database. Admins receive feedback on the success or failure of the uplo
 
--Edit User:- Admins can edit existing user details.
--User Behavior:- Admins can click on an edit button next to a user to modify their details. Upon submission, the changes are saved.
+- Edit User:- Admins can edit existing user details.
+- User Behavior:- Admins can click on an edit button next to a user to modify their details. Upon submission, the changes are saved.
 
 ### Project Structure
 - **backend:** Contains the Django backend code.
