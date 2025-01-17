@@ -102,9 +102,13 @@ python -m venv venv
 **- Activate the Virtual Environment:**
 
 - On Windows:
-`venv\Scripts\activate`
+```
+venv\Scripts\activate
+```
 - On macOS/Linux:
-`source venv/bin/activate`
+```
+source venv/bin/activate
+```
 **- Install Requirements:**
 `pip install -r requirements.txt`
 **- Make Migrations:**
