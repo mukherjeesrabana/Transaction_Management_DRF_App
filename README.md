@@ -154,9 +154,9 @@ The frontend server will be available at http://localhost:3000.
 
 
 ### Additional Information
-**- Django Admin Dashboard:** Access the admin dashboard at http://127.0.0.1:8000/admin using the superuser credentials.
-**- API Endpoints:** The backend provides various API endpoints for managing transactions, categories, subcategories, and users.
-**- Frontend:** The frontend provides a user-friendly interface for managing transactions and viewing reports.
+- **Django Admin Dashboard:** Access the admin dashboard at http://127.0.0.1:8000/admin using the superuser credentials.
+- **API Endpoints:** The backend provides various API endpoints for managing transactions, categories, subcategories, and users.
+- **Frontend:** The frontend provides a user-friendly interface for managing transactions and viewing reports.
 
 ### Conclusion
 This project provides a comprehensive solution for managing transactions and users, with a robust backend built using Django REST Framework and a modern frontend built using React. Follow the installation steps to set up the project on your local system and explore its features.
