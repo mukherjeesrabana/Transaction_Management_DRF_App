@@ -101,19 +101,19 @@ python -m venv venv
 ```
 **- Activate the Virtual Environment:**
 
-- **On Windows:**
+- On Windows:
 `venv\Scripts\activate`
-- **On macOS/Linux:**
+- On macOS/Linux:
 `source venv/bin/activate`
-**- Install Requirements:**
+- **Install Requirements:**
 `pip install -r requirements.txt`
-**- Make Migrations:**
+- **Make Migrations:**
 `python manage.py makemigrations`
-**- Apply Migrations:**
+- **Apply Migrations:**
 `python manage.py migrate`
-**- Create Superuser:**
+- **Create Superuser:**
 `python manage.py createsuperuser`
-**- Run the Backend Server:**
+- **Run the Backend Server:**
 `python manage.py runserver`
 
  The backend server will be available at http://127.0.0.1:8000/admin. Use the superuser credentials to log in.
