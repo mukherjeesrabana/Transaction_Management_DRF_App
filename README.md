@@ -105,9 +105,9 @@ python -m venv venv
 `venv\Scripts\activate`
 - On macOS/Linux:
 `source venv/bin/activate`
-- **Install Requirements:**
+**- Install Requirements:**
 `pip install -r requirements.txt`
-- **Make Migrations:**
+**- Make Migrations:**
 `python manage.py makemigrations`
 - **Apply Migrations:**
 `python manage.py migrate`
