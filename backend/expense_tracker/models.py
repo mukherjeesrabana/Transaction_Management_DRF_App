@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 
 TRANSACTION_TYPE_CHOICES = (
     ('Expense', 'Expense'),
@@ -33,6 +34,7 @@ def getSubCategory():
     return f"{self.id}-- {sub_category.id}"
 
 class SystemUser(models.Model):
+    createOn= models.DateField(default= datetime.now)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     user_type = models.CharField(max_length=30, choices=USER_TYPE_CHOICES, default="Standard User")
     status= models.CharField(max_length=20, choices=USER_STATUS_CHOICES, default="Active")

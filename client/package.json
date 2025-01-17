@@ -19,6 +19,7 @@
     "@emotion/styled": "^11.10.8",
     "@mui/icons-material": "5.11.16",
     "@mui/material": "^5.12.3",
+    "@mui/x-charts": "^7.23.6",
     "@mui/x-data-grid": "^7.23.5",
     "@mui/x-date-pickers": "^7.23.3",
     "antd": "^5.23.0",

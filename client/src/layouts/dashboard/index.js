@@ -44,6 +44,7 @@ import getCategoryWisecreditData from "./data/categorywisecredits";
 import DailyExpenseTrackerChart from "layouts/reports/DailyExpenseTrackerChart";
 import MonthlyCategorywiseBreakdownChart from "layouts/expense_tracker/reports/MonthlyCategorywiseBreakdownChart";
 import { Card } from "antd";
+import ExpenseTrackerBarChart from "layouts/expense_tracker/reports/ExpenseTrackerBarChart";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
@@ -121,6 +122,10 @@ function Dashboard() {
     }
   };
 
+  const valueFormatter = (value) => {
+    return `INR ${value}`;
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -136,7 +141,7 @@ function Dashboard() {
                 color="success"
                 icon="weekend"
                 title="Monthly Credits"
-                count={data.total_credits}
+                count={valueFormatter(data.total_credits)}
               />
             </MDBox>
           </Grid>
@@ -146,7 +151,7 @@ function Dashboard() {
                 color="error"
                 icon="leaderboard"
                 title="Monthly Expenses"
-                count={data.total_expenses}
+                count={valueFormatter(data.total_expenses)}
               />
             </MDBox>
           </Grid>
@@ -155,7 +160,7 @@ function Dashboard() {
               <ComplexStatisticsCard
                 icon="store"
                 title="Monthly Available Balance"
-                count={data.available_balance}
+                count={valueFormatter(data.available_balance)}
               />
             </MDBox>
           </Grid>
@@ -188,14 +193,14 @@ function Dashboard() {
           </Grid>
         </MDBox>
         <MDBox>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
+          <Grid container spacing={6}>
+            {/* <Grid item xs={12} md={6} lg={8}>
               <Projects month={month} year={year} />
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            </Grid> */}
+            <Grid item xs={12} md={10} lg={10}>
               <MDBox mb={3}>
-                <Card title="Categorywise Breakdown of Expoenses">
-                  <MonthlyCategorywiseBreakdownChart year={year} month={month} />
+                <Card title="Monthly Overview">
+                  <ExpenseTrackerBarChart year={year} month={month} />
                 </Card>
               </MDBox>
             </Grid>

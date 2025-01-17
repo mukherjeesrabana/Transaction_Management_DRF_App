@@ -6,12 +6,13 @@ from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 import json
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from django.db.models.functions import TruncMonth
 from django.utils.timezone import now
 from datetime import datetime
 import pandas as pd
 from .permissions import IsAdmin, IsStandardUser
+from django.core.mail import send_mail
 
 
 @api_view(['POST'])
@@ -353,6 +354,7 @@ def monthly_transactions(request, year, month):
                 "transaction_type": transaction.transaction_type,
                 "amount": transaction.amount,
                 "category": transaction.category.category_name,
+                "subcategory": transaction.subcategory.subcategory_name,
                 "description": transaction.description,
                 "transaction_user": transaction.transaction_user.user.username
             }
@@ -370,8 +372,8 @@ def monthly_expenses_by_category(request, year, month):
         date__month=month,
         transaction_type='Expense'
     )
-    breakdown = transactions.values('category__category_name', 'description').annotate(total_amount=Sum('amount')).order_by('-total_amount')
-    data = [{"category": item['category__category_name'], "description": item['description'], "total_amount": item['total_amount']} for item in breakdown]
+    breakdown = transactions.values('category__category_name', 'subcategory__subcategory_name', 'description').annotate(total_amount=Sum('amount')).order_by('-total_amount')
+    data = [{"category": item['category__category_name'], "subcategory": item['subcategory__subcategory_name'], "description":item['description'], "total_amount": item['total_amount']} for item in breakdown]
     return JsonResponse(data, safe=False)
 
 @api_view(['GET'])
@@ -383,8 +385,8 @@ def monthly_credits_by_category(request, year, month):
         date__month=month,
         transaction_type='Credit'
     )
-    breakdown = transactions.values('category__category_name', 'description').annotate(total_amount=Sum('amount')).order_by('-total_amount')
-    data = [{"category": item['category__category_name'], "description": item['description'], "total_amount": item['total_amount']} for item in breakdown]
+    breakdown = transactions.values('category__category_name', 'subcategory__subcategory_name', 'description').annotate(total_amount=Sum('amount')).order_by('-total_amount')
+    data = [{"category": item['category__category_name'],"subcategory":item['subcategory__subcategory_name'],  "description": item['description'], "total_amount": item['total_amount']} for item in breakdown]
     return JsonResponse(data, safe=False)
 
 
@@ -418,10 +420,33 @@ def monthly_categorywise_breakdown(request, year, month):
         date__year=year,
         date__month=month
     )
-    breakdown = transactions.values('category__category_name', 'description', 'transaction_type').annotate(total_amount=Sum('amount')).order_by('-total_amount')
-    data = [{"category": item['category__category_name'], "description": item['description'], "transaction_type": item['transaction_type'], "total_amount": item['total_amount']} for item in breakdown]
+    breakdown = transactions.values('category__category_name', 'subcategory__subcategory_name', 'description', 'transaction_type').annotate(total_amount=Sum('amount')).order_by('-total_amount')
+    data = [{"category": item['category__category_name'], "subcategory":item['subcategory__subcategory_name'], "description": item['description'], "transaction_type": item['transaction_type'], "total_amount": item['total_amount']} for item in breakdown]
     return JsonResponse(data, safe=False)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, IsStandardUser])
+def monthly_expense_tracker_bar_data(request, year, month):
+    categories = Category.objects.all()
+    data = []
+
+    for category in categories:
+        transactions = Transaction.objects.filter(
+            date__year=year,
+            date__month=month,
+            transaction_user__user=request.user,
+            category=category
+        )
+        breakdown = transactions.values('subcategory__subcategory_name', 'transaction_type').annotate(total_amount=Sum('amount')).order_by('-total_amount')
+        
+        category_data = {"category": category.category_name}
+        for item in breakdown:
+            subcategory_name = item['subcategory__subcategory_name']
+            category_data[subcategory_name] = float(item['total_amount'])  # Convert Decimal to float for JSON serialization
+        
+        data.append(category_data)
+    
+    return JsonResponse(data, safe=False)
 
 
 
@@ -461,7 +486,7 @@ def userlist(request):
         user= User.objects.create_user(username= username, first_name= first_name, last_name= last_name, email=email, password=password)
 
         SystemUser.objects.create(user=user, user_type= 'Standard User', status='Active')
-
+    
         return JsonResponse({'message': 'User created successfully.'}, status=status.HTTP_201_CREATED)
     
 
@@ -531,7 +556,37 @@ def upload_users(request):
        
     return JsonResponse({'message': 'Users uploaded successfully'}, status=status.HTTP_201_CREATED)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, IsAdmin])
+def user_statistics(request):
+    total_users = SystemUser.objects.count()
+    active_users = SystemUser.objects.filter(status='Active').count()
+    inactive_users = SystemUser.objects.filter(status='Inactive').count()
+    admin_users = SystemUser.objects.filter(user_type='Admin User').count()
+    standard_users = SystemUser.objects.filter(user_type='Standard User').count()
 
+    data = {
+        'total_users': total_users,
+        'active_users': active_users,
+        'inactive_users': inactive_users,
+        'admin_users': admin_users,
+        'standard_users': standard_users,
+    }
+    return JsonResponse(data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, IsAdmin])
+def user_registration_trend(request):
+    trend = SystemUser.objects.annotate(month=TruncMonth('createOn')).values('month').annotate(count=Count('id')).order_by('month')
+    data = [{'month': item['month'].strftime('%Y-%m'), 'count': item['count']} for item in trend]
+    return JsonResponse(data, safe=False)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, IsAdmin])
+def user_role_distribution(request):
+    distribution = SystemUser.objects.values('user_type').annotate(count=Count('id'))
+    data = [{'user_type': item['user_type'], 'count': item['count']} for item in distribution]
+    return JsonResponse(data, safe=False)
 
 
 

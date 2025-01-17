@@ -36,7 +36,7 @@ const MonthlyExpensesByCategoryChart = ({ year, month }) => {
           const formattedData = [
             ["Category", "Amount"],
             ...result.data.map((item) => [
-              `${item.description} [${item.category}]`,
+              `${item.subcategory} [${item.category}]`,
               parseFloat(item.total_amount),
             ]),
           ];

@@ -17,17 +17,22 @@ urlpatterns = [
     path('delete-transaction/<int:transaction_id>/', views.delete_transaction, name='delete-transaction'),
     path('edit-category/<int:category_id>/', views.edit_category, name='edit-category'),
     path('delete-category/<int:category_id>/', views.delete_category, name='delete-category'),
+    
 
     path('monthly-transactions/<int:year>/<int:month>/', views.monthly_transactions, name='monthly-transactions'),
     path('monthly-expenses-by-category/<int:year>/<int:month>/', views.monthly_expenses_by_category, name='monthly-expenses-by-category'),
     path('monthly-credits-by-category/<int:year>/<int:month>/', views.monthly_credits_by_category, name='monthly-credits-by-category'),
     path('monthly-overall-overview/<int:year>/<int:month>/', views.monthly_overall_overview, name='monthly-overall-overview'),
     path('monthly-categorywise-breakdown/<int:year>/<int:month>/', views.monthly_categorywise_breakdown, name='monthly-categorywise-breakdown'),
+    path('monthly-expense-tracker-bar-data/<int:year>/<int:month>/', views.monthly_expense_tracker_bar_data, name='monthly-expense-tracker-bar-data'),
     
     path('user-list/', views.userlist, name='user-list'),
     path('upload-users/', views.upload_users, name='upload-users'),
     path('edit-user/<str:email>/', views.editUser, name='edit-user'),
     path('change-user-status/<str:email>/', views.changeUserStatus, name='change-user-status'),
+    path('user-statistics/', views.user_statistics, name='user-statistics'),
+    path('user-registration-trend/', views.user_registration_trend, name='user-registration-trend'),
+    path('user-role-distribution/', views.user_role_distribution, name='user-role-distribution'),
 
 
     # other paths...

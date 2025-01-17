@@ -8,6 +8,7 @@ import MonthlyExpensesByCategoryChart from "./MonthlyExpensesByCategooryChart";
 import MonthlyCreditsByCategoryChart from "./MonthlyCreditsByCategory";
 import MonthlyOverviewChart from "./MonthlyOverviewChart";
 import MonthlyCategorywiseBreakdownChart from "./MonthlyCategorywiseBreakdownChart";
+import ExpenseTrackerBarChart from "./ExpenseTrackerBarChart";
 
 export default function Reports() {
   const [year, setYear] = useState(new Date().getFullYear());
@@ -44,6 +45,11 @@ export default function Reports() {
               <MonthlyCategorywiseBreakdownChart year={year} month={month} />
             </MDBox>
           </Grid>
+          {/* <Grid item xs={12} md={6} lg={6}>
+            <MDBox mb={1.5}>
+              <ExpenseTrackerBarChart year={year} month={month} />
+            </MDBox>
+          </Grid> */}
           {/* Other charts */}
         </Grid>
       </MDBox>
