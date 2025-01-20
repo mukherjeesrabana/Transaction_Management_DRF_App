@@ -59,15 +59,15 @@ const routes = [
     component: <Reports />,
     roles: ["Standard User"], // Accessible to admin and user
   },
-  {
-    type: "collapse",
-    name: "Dashboard",
-    key: "admindashbooard",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/admin-dashboard",
-    component: <AdminDashboard />,
-    roles: ["Admin User"], // Accessible to admin and user
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Dashboard",
+  //   key: "admindashbooard",
+  //   icon: <Icon fontSize="small">table_view</Icon>,
+  //   route: "/admin-dashboard",
+  //   component: <AdminDashboard />,
+  //   roles: ["Admin User"], // Accessible to admin and user
+  // },
   {
     type: "collapse",
     name: "User Management",

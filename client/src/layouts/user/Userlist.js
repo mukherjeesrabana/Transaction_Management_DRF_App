@@ -45,7 +45,6 @@ const UserList = ({ users, fetchUsers }) => {
     { title: "First Name", dataIndex: "first_name", key: "first_name" },
     { title: "Last Name", dataIndex: "last_name", key: "last_name" },
     { title: "Email Address", dataIndex: "email", key: "email" },
-    { title: "Status", dataIndex: "status", key: "status" },
 
     {
       title: "Action",

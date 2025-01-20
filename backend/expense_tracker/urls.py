@@ -29,8 +29,8 @@ urlpatterns = [
     path('user-list/', views.userlist, name='user-list'),
     path('upload-users/', views.upload_users, name='upload-users'),
     path('edit-user/<str:email>/', views.editUser, name='edit-user'),
-    path('change-user-status/<str:email>/', views.changeUserStatus, name='change-user-status'),
-    path('user-statistics/', views.user_statistics, name='user-statistics'),
+    # path('change-user-status/<str:email>/', views.changeUserStatus, name='change-user-status'),
+    # path('user-statistics/', views.user_statistics, name='user-statistics'),
     path('user-registration-trend/', views.user_registration_trend, name='user-registration-trend'),
     path('user-role-distribution/', views.user_role_distribution, name='user-role-distribution'),
 
