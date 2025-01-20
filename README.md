@@ -150,7 +150,7 @@ npm install
 ```
 npm start
 ```
-The frontend server will be available at http://localhost:3000.
+The frontend server will be available at http://localhost:3000. Paste http://localhost:3000/authentication/sign-in in the browser tab to proceed futher.
 
 
 ### Additional Information
