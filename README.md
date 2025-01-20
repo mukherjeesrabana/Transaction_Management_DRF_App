@@ -88,7 +88,7 @@ Open gitbash and run the following commands:
 ```
 git clone https://github.com/your-repo/transaction_management_drf_practice_app.git
 cd transaction_management_drf_practice_app
-git checkout back_front_integration
+git checkout feature/back_front_integration
 ```
 ### Backend Setup
 **- Install Python:**
