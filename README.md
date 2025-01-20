@@ -1,4 +1,4 @@
-# Transaction Management DRF Practice App
+# Transaction Management App
 
 ## Overview
 
