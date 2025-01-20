@@ -109,6 +109,10 @@ venv\Scripts\activate
 ```
 source venv/bin/activate
 ```
+If you face some system issues while activating the virtual enviroment, run the following command:
+```
+Set-ExecutionPolicy Unrestricted -Scope Process
+```
 **- Install Requirements:**
 ```
 pip install -r requirements.txt
