@@ -1,4 +1,4 @@
-import { BarChart } from "@mui/x-charts";
+// import { BarChart } from "@mui/x-charts";
 import { axisClasses } from "@mui/x-charts/ChartsAxis";
 import { Card } from "antd";
 import axios from "axios";
@@ -7,6 +7,16 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LineChart, lineElementClasses } from "@mui/x-charts/LineChart";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function ExpenseTrackerBarChart({ year, month }) {
   const [data, setData] = useState([]);
@@ -45,39 +55,23 @@ export default function ExpenseTrackerBarChart({ year, month }) {
     };
     fetchData();
   }, [year, month]);
+  const processChartData = (rawData) => {
+    const subCategories = new Set();
 
-  function valueFormatter(value) {
-    return `INR ${value}`;
-  }
+    rawData.forEach((item) => {
+      Object.keys(item).forEach((key) => {
+        if (key !== "category") subCategories.add(key);
+      });
+    });
 
-  const handleBarClick = (event) => {
-    const barElement = event.target; // Access the clicked DOM element
-    const seriesId = barElement.getAttribute("data-series-id"); // Check if the element has a series ID
-    const index = barElement.getAttribute("data-index"); // Index of the bar in the dataset
-
-    if (seriesId && index) {
-      const dataKey = seriesId; // The series corresponds to the dataKey
-      const category = data[index].category; // Adjust based on your dataset structure
-      const value = data[index][dataKey];
-
-      alert(`Category: ${category}, Data Key: ${dataKey}, Value: ${value}`);
-    } else {
-      alert("Could not determine bar data. Check if the chart supports data mapping.");
-    }
+    return {
+      processedData: rawData,
+      keys: Array.from(subCategories),
+    };
   };
 
-  // Extract all unique subcategories from the data
-  const subcategories = Array.from(
-    new Set(data.flatMap((item) => Object.keys(item).filter((key) => key !== "category")))
-  );
-
-  // Create series array based on the subcategories
-  const series = subcategories.map((subcategory) => ({
-    dataKey: subcategory,
-    label: subcategory,
-    valueFormatter,
-    // color: `#${Math.floor(Math.random() * 16777215).toString(16)}`, // Random color for each subcategory
-  }));
+  const { processedData, keys } = processChartData(data);
+  const colors = ["#8884d8", "#82ca9d", "#ffc658", "#d45087", "#a05195"];
 
   return (
     <div>
@@ -86,14 +80,18 @@ export default function ExpenseTrackerBarChart({ year, month }) {
         <MDTypography>{noData}</MDTypography>
       ) : (
         <Card>
-          <BarChart
-            dataset={data}
-            xAxis={[{ scaleType: "band", dataKey: "category" }]}
-            series={series}
-            onClick={(event) => handleBarClick(event)}
-            width={900}
-            height={500}
-          />
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={processedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="category" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              {keys.map((key, index) => (
+                <Bar key={key} dataKey={key} stackId="a" fill={colors[index % colors.length]} />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
         </Card>
       )}
     </div>
