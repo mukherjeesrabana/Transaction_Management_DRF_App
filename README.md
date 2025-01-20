@@ -86,8 +86,8 @@ There are two types of roles in the application:
 ### Clone the Repository
 Open gitbash and run the following commands:
 ```
-git clone https://github.com/your-repo/transaction_management_drf_practice_app.git
-cd transaction_management_drf_practice_app
+git clone https://github.com/mukherjeesrabana/Transaction_Management_DRF_App.git
+cd Transaction_Management_DRF_App
 git checkout feature/back_front_integration
 ```
 ### Backend Setup
