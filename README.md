@@ -26,7 +26,7 @@ There are two types of roles in the application:
 - Add Transactions:- Users can add new transactions by providing details such as date, amount, category, subcategory, and description.
 - User Behavior:- Users fill out a form to add a new transaction. Upon submission, the transaction is added to their list of transactions.
 
-- Bulk Upload Transactions:- Users can upload a .xls file containing transaction details to add multiple transactions at once. Refer to the excel file structure from transactions.xlsx file in bulkuploads folder.
+- Bulk Upload Transactions:- Users can upload a .xlsx file containing transaction details to add multiple transactions at once. Refer to the excel file structure from **transactions.xlsx** file that resides inside the **bulkuploads** folder.
 - User Behavior:- Users can navigate to the bulk upload page and upload a .xls file with transaction details. The system processes the file and adds the transactions to the database. Users receive feedback on the success or failure of the upload.
 
 - View Transactions:- Users can view a list of their transactions.
@@ -71,7 +71,7 @@ There are two types of roles in the application:
 - Add User:- Admins can add new users to the system.
 - User Behavior:- Admins fill out a form to add a new user. Upon submission, the user is added to the system and appears in the user list.
 
-- Bulk Upload Users:- Admins can upload a .xls file containing user details to add multiple users at once.Refer to the excel file structure from users.xlsx file in bulkuploads folder.
+- Bulk Upload Users:- Admins can upload a .xlsx file containing user details to add multiple users at once.Refer to the excel file structure from **users.xlsx** file that resides inside the **bulkuploads** folder.
 - User Behavior:- Admins can navigate to the bulk upload page and upload a .xls file with user details. The system processes the file and adds the users to the database. Admins receive feedback on the success or failure of the uplo
 
 - Edit User:- Admins can edit existing user details.
