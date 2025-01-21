@@ -92,6 +92,22 @@ def subcategory_list(request):
         subCategory = SubCategory.objects.create(category=category, subcategory_name=subcategory_name)
         return JsonResponse({"id": subCategory.id, "category": subCategory.category.category_name, "subcategory_name": subCategory.subcategory_name}, status=201)
 
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated, IsStandardUser])
+def subcategory_list_by_category_id(request, cat_id):
+    if request.method=='GET':
+        subCategories= SubCategory.objects.filter(category__id=cat_id)
+        data=[
+            {
+                "id":subCategory.id,
+                "category":subCategory.category.category_name,
+                "category_id":subCategory.category.id,
+                "subcategory_name":subCategory.subcategory_name
+            } for subCategory in subCategories
+        ]
+        return JsonResponse(data, safe=False)
+
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated, IsStandardUser])
 def edit_subcategory(request, id):

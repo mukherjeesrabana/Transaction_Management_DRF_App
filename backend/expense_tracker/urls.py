@@ -6,6 +6,7 @@ urlpatterns = [
     path('signin/', views.signin, name='signin'),
 
     path('subcategory-list/', views.subcategory_list, name='subcategory-list'),
+    path('subcategory-list-by-category/<int:cat_id>/', views.subcategory_list_by_category_id, name='subcategory-list-by-category'),
     path('edit-subcategory/<int:id>/', views.edit_subcategory, name='edit-subcategory'),
     path('upload-subcats/', views.upload_subcats, name='upload-subcats'),
 

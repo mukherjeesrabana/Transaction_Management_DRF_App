@@ -9,14 +9,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
-const EditTransaction = ({
-  visible,
-  onClose,
-  transaction,
-  categories,
-  subCategories,
-  fetchTransactions,
-}) => {
+const EditTransaction = ({ visible, onClose, transaction, categories, fetchTransactions }) => {
+  const [subCategories, setSubCategories] = useState([]);
   const token = sessionStorage.getItem("access_token");
 
   const [form] = Form.useForm();
@@ -41,9 +35,35 @@ const EditTransaction = ({
     }
   }, [transaction, form]);
 
+  useEffect(() => {
+    axios
+      .get(
+        `http://127.0.0.1:8000/expense-tracker/subcategory-list-by-category/${transaction.category_id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        setSubCategories(response.data);
+      })
+      .catch((error) => {
+        if (error.status === 401) {
+          navigate("/authentication/sign-in");
+          sessionStorage.clear();
+          window.location.reload();
+        } else if (error.status == 400) {
+          alert(error.response.data.error);
+        }
+      });
+  }, [transaction]);
+
   const handleOk = async () => {
     try {
-      const values = await form.validateFields();
+      const values = await form.getFieldsValue();
+      console.log(values);
       await axios.put(
         `http://127.0.0.1:8000/expense-tracker/edit-transaction/${transaction.id}/`,
         {
@@ -70,7 +90,28 @@ const EditTransaction = ({
       }
     }
   };
-
+  const onCategoryChange = (value) => {
+    console.log(value);
+    axios
+      .get(`http://127.0.0.1:8000/expense-tracker/subcategory-list-by-category/${value}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setSubCategories(response.data);
+      })
+      .catch((error) => {
+        if (error.status === 401) {
+          navigate("/authentication/sign-in");
+          sessionStorage.clear();
+          window.location.reload();
+        } else if (error.status == 400) {
+          alert(error.response.data.error);
+        }
+      });
+  };
   return (
     <Modal title="Edit Transaction" visible={visible} onOk={handleOk} onCancel={onClose}>
       <Form form={form} layout="vertical">
@@ -87,7 +128,7 @@ const EditTransaction = ({
           <Input type="number" />
         </Form.Item>
         <Form.Item name="category" label="Category" rules={[{ required: true }]}>
-          <Select>
+          <Select onChange={onCategoryChange}>
             {categories.map((category) => (
               <Option key={category.id} value={category.id}>
                 {category.category_name}
@@ -97,9 +138,9 @@ const EditTransaction = ({
         </Form.Item>
         <Form.Item name="subcategory" label="Sub Category" rules={[{ required: true }]}>
           <Select>
-            {subCategories.map((category) => (
-              <Option key={category.id} value={category.id}>
-                {category.subcategory_name}
+            {subCategories.map((s) => (
+              <Option key={s.id} value={s.id}>
+                {s.subcategory_name}
               </Option>
             ))}
           </Select>
@@ -117,7 +158,6 @@ EditTransaction.propTypes = {
   onClose: PropTypes.func.isRequired,
   transaction: PropTypes.object,
   categories: PropTypes.array.isRequired,
-  subCategories: PropTypes.array.isRequired,
   fetchTransactions: PropTypes.func.isRequired,
 };
 

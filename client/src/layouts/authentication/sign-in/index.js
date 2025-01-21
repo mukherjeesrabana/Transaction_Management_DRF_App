@@ -136,6 +136,14 @@ function Basic() {
             </MDBox>
           </form>
         </MDBox>
+        <MDBox px={3} pb={3} textAlign="center">
+          <MDTypography variant="body2" color="text">
+            Donot have an account?{" "}
+            <MuiLink component={Link} to="/authentication/sign-up" color="info">
+              Sign up
+            </MuiLink>
+          </MDTypography>
+        </MDBox>
       </Card>
     </BasicLayout>
   );

@@ -6,9 +6,10 @@ import PropTypes from "prop-types";
 
 const { Option } = Select;
 
-const TransactionAddForm = ({ categories, subCategories, submitTransaction }) => {
-  console.log(subCategories);
+const TransactionAddForm = ({ categories, submitTransaction }) => {
+  const [subCategories, setSubCategories] = useState([]);
   const [form] = Form.useForm();
+  const token = sessionStorage.getItem("access_token");
 
   const onFinish = async (values) => {
     console.log(values);
@@ -19,6 +20,28 @@ const TransactionAddForm = ({ categories, subCategories, submitTransaction }) =>
     { name: "Expense", id: "Expense" },
     { name: "Credit", id: "Credit" },
   ];
+  const onCategoryChange = (value) => {
+    console.log(value);
+    axios
+      .get(`http://127.0.0.1:8000/expense-tracker/subcategory-list-by-category/${value}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setSubCategories(response.data);
+      })
+      .catch((error) => {
+        if (error.status === 401) {
+          navigate("/authentication/sign-in");
+          sessionStorage.clear();
+          window.location.reload();
+        } else if (error.status == 400) {
+          alert(error.response.data.error);
+        }
+      });
+  };
 
   return (
     <Form form={form} onFinish={onFinish}>
@@ -34,7 +57,7 @@ const TransactionAddForm = ({ categories, subCategories, submitTransaction }) =>
         labelCol={{ span: 6 }}
         rules={[{ required: true }]}
       >
-        <Select>
+        <Select onChange={onCategoryChange}>
           {categories.map((category) => (
             <Option key={category.id} value={category.id}>
               {category.category_name}
@@ -49,9 +72,9 @@ const TransactionAddForm = ({ categories, subCategories, submitTransaction }) =>
         rules={[{ required: true }]}
       >
         <Select>
-          {subCategories.map((category) => (
-            <Option key={category.id} value={category.id}>
-              {category.subcategory_name}
+          {subCategories.map((s) => (
+            <Option key={s.id} value={s.id}>
+              {s.subcategory_name}
             </Option>
           ))}
         </Select>
@@ -110,7 +133,6 @@ const TransactionAddForm = ({ categories, subCategories, submitTransaction }) =>
 };
 TransactionAddForm.propTypes = {
   categories: PropTypes.array,
-  subCategories: PropTypes.array,
   submitTransaction: PropTypes.func,
 };
 
