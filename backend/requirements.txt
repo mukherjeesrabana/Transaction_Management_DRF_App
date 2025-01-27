@@ -5,3 +5,5 @@ requests
 djangorestframework-simplejwt
 pandas
 openpyxl
+mysqlclient
+python-decouple
